@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { WebClient } from '@slack/web-api';
 const web = new WebClient(process.env.SLACK_BOT_TOKEN);
 const channeltouse = process.env.CHANNEL_TO_USE; // get from .env
@@ -12,6 +13,7 @@ async function sendMessage() {
   console.log(`Message sent: ${result.ts}`);
 }
 
+sendMessage().catch(console.error);
 
 // while True:
 //   if message contains "Staged as confession" && from prox2:
