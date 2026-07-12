@@ -1,10 +1,11 @@
 import { WebClient } from '@slack/web-api';
 const web = new WebClient(process.env.SLACK_BOT_TOKEN);
+const channeltouse = process.env.CHANNEL_TO_USE; // get from .env
 
 async function sendMessage() {
   // Arguments and responses are strictly typed automatically
   const result = await web.chat.postMessage({
-    channel: 'C09SXNX0GNP',
+    channel: channeltouse,
     text: 'Hello World!'
   });
 
