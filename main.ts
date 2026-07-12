@@ -3,17 +3,16 @@ import { WebClient } from '@slack/web-api';
 const web = new WebClient(process.env.SLACK_BOT_TOKEN);
 const channeltouse = process.env.CHANNEL_TO_USE; // get from .env
 
-async function sendMessage() {
-  // Arguments and responses are strictly typed automatically
+async function sendMessage(MessageToSend) { // I should find better variable names
   const result = await web.chat.postMessage({
     channel: channeltouse,
-    text: 'Hello World!'
+    text: MessageToSend
   });
 
   console.log(`Message sent: ${result.ts}`);
 }
 
-sendMessage().catch(console.error);
+sendMessage("Hi").catch(console.error);
 
 // while True:
 //   if message contains "Staged as confession" && from prox2:
