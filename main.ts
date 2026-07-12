@@ -1,18 +1,29 @@
-import env
-load env as env
+import { WebClient } from '@slack/web-api';
+const web = new WebClient(process.env.SLACK_BOT_TOKEN);
 
-while True:
-  if message contains "Staged as confession" && from prox2:
-    save to thingies.txt // find a better name
+async function sendMessage() {
+  // Arguments and responses are strictly typed automatically
+  const result = await web.chat.postMessage({
+    channel: 'C09SXNX0GNP',
+    text: 'Hello World!'
+  });
 
-if messsage in confession logs contains thing in thingies.txt:
-  case if "Meta"
+  console.log(`Message sent: ${result.ts}`);
+}
 
-  else if "approved"
 
-  else if "denied"
+// while True:
+//   if message contains "Staged as confession" && from prox2:
+//     save to thingies.txt // find a better name
 
-func Notify_User(ConfessionStatus)
-  dm(user,ConfessionStatus)
+// if messsage in confession logs contains thing in thingies.txt:
+//   case if "Meta"
 
-run slack(SLACK_BOT_TOKEN)
+//   else if "approved"
+
+//   else if "denied"
+
+// func Notify_User(ConfessionStatus)
+//   dm(user,ConfessionStatus)
+
+// run slack(SLACK_BOT_TOKEN)

@@ -1,4 +1,7 @@
 {
+  "name": "mrox",
+  "version": "0.1.0",
+  "private": true,
   "dependencies": {
     "@slack/web-api": "^7.19.0"
   },
@@ -6,5 +9,10 @@
     "@types/node": "^26.1.1",
     "ts-node": "^10.9.2",
     "typescript": "^7.0.2"
+  },
+  "scripts": {
+    "dev": "ts-node main.ts",
+    "build": "tsc --outDir dist",
+    "start": "node dist/main.js"
   }
 }
