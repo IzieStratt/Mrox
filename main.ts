@@ -1,9 +1,16 @@
 import 'dotenv/config';
+import { App } from '@slack/bolt';
 import { WebClient } from '@slack/web-api';
 const web = new WebClient(process.env.SLACK_BOT_TOKEN);
 const channeltouse = process.env.CHANNEL_TO_USE; // get from .env
 
-async function sendMessage(MessageToSend) { // I should find better variable names
+const app = new App({
+  token: process.env.SLACK_BOT_TOKEN,
+  appToken: process.env.SLACK_APP_TOKEN,
+  socketMode: true, // becuase yes
+});
+
+async function sendMessage(MessageToSend: any) { // I should find better variable names
   const result = await web.chat.postMessage({
     channel: channeltouse,
     text: MessageToSend
@@ -13,6 +20,9 @@ async function sendMessage(MessageToSend) { // I should find better variable nam
 }
 
 sendMessage("Hi").catch(console.error);
+
+// Okay so like here we recieve events when a message from Prox2 is sent in dms ig???
+
 
 // while True:
 //   if message contains "Staged as confession" && from prox2:
