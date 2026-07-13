@@ -28,7 +28,7 @@ sendMessage("Hi").catch(console.error);
 async function checkStatus(information: string) { // ok so this needs to be called every new message in that ig because bots dont have pingwords
   const lower = information.toLowerCase(); // idt it needs to be used but hey i can remove it later
   switch (true) {
-    case lower.includes("meta"):
+    case lower.includes("approved for meta"):
       await sendMessage(`:perrytheplatpus: Your post ${post.ID} got approved for #meta! Here's [a link|hackclub.enterprise.slack.com/ewfrgibgo//frgthn] to it.`, user.ID)
       // ok so here we need to mark the post in confessions.json as resolved
       break;
@@ -36,7 +36,7 @@ async function checkStatus(information: string) { // ok so this needs to be call
       await sendMessage(`:yay: Your post ${post.ID} got approved for #confessions! Here's [a link|efowediverbfuvnfeorghiubdfojrthuit] to it.`)
       // ok so here we need to mark the post in confessions.json as resolved
       break;
-    case lower.includes("denied"):
+    case lower.includes("rejected"):
       await sendMessage(`:neocat_sad: Your post ${post.ID} was denied, link to the deny message`) // TODO: add a thing to check the thread to see if a @crt member added a reason
       break;
   }
