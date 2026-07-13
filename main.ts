@@ -3,7 +3,9 @@ import { App } from '@slack/bolt';
 import { WebClient } from '@slack/web-api';
 import { info } from 'console';
 const web = new WebClient(process.env.SLACK_BOT_TOKEN);
-const defaultchannel = process.env.CHANNEL_TO_USE; // get from .env
+const defaultchannel = process.env.CHANNEL_TO_USE; // get from .envwait why am i having a feafualt channel lol
+const Channel_Confession_Logs = "C08R8LE6DDG" // real id! hopefully doesnt change or get privated
+const Channel_Confession = "CNMU9L92Q" // why does this look different?
 
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
@@ -22,8 +24,8 @@ async function sendMessage(MessageToSend: any, channel: string = defaultchannel!
 
 sendMessage("Hi").catch(console.error);
 // aaaaaaaaa
-async function checkStatus(information: string) {
-  const lower = information.toLowerCase();
+async function checkStatus(information: string) { // ok so this needs to be called every new message in that ig because bots dont have pingwords
+  const lower = information.toLowerCase(); // idt it needs to be used but hey i can remove it later
   switch (true) {
     case lower.includes("meta"):
       await sendMessage(`:perrytheplatpus: Your post ${post.ID} got approved for #meta! Here's [a link|hackclub.enterprise.slack.com/ewfrgibgo//frgthn] to it.`, user.ID)
