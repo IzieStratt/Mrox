@@ -11,7 +11,7 @@ const app = new App({
   socketMode: true, // becuase yes
 });
 
-async function sendMessage(MessageToSend: any, channel: string = defaultchannel) {
+async function sendMessage(MessageToSend: any, channel: string = defaultchannel!) {
   const result = await web.chat.postMessage({
     channel: channel,
     text: MessageToSend
@@ -40,7 +40,8 @@ async function checkStatus(information: string) {
 // Okay so like here we recieve events when a message from Prox2 is sent in dms ig???
 app.event('message', async ({ event, context, logger }) => {
   try {
-    //  ignore
+    //  ignore messages from the bot, something that would never happen but shrug
+    // should probably make it so we only listen to messages by prox2 here
     if ('user' in event && event.user !== context.botUserId) {
       console.log(` New message from user ${event.user} in channel ${event.channel}:`);
       console.log(`Content: "${'text' in event ? event.text : '[No text content]'}"`);
