@@ -22,12 +22,16 @@ async function sendMessage(MessageToSend: any) { // I should find better variabl
 
 sendMessage("Hi").catch(console.error);
 // aaaaaaaaa
-async function checkStatus(information: String) {
-  case information.contains("meta") {
-
+async function checkStatus(information: string) {
+  const lower = information.toLowerCase();
+  switch (true) {
+    case lower.includes("meta"):
+      break;
+    case lower.includes("approved"):
+      break;
+    case lower.includes("denied"):
+      break;
   }
-  switch (information.contains("approved"))
-  switch (infomration.contains("denied"))
 }
 
 // Okay so like here we recieve events when a message from Prox2 is sent in dms ig???
