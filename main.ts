@@ -21,7 +21,7 @@ async function sendMessage(MessageToSend: any) { // I should find better variabl
 }
 
 sendMessage("Hi").catch(console.error);
-
+// aaaaaaaaa
 async function checkStatus(information: String) {
   case information.contains("meta") {
 
