@@ -26,13 +26,13 @@ async function checkStatus(information: string) {
   const lower = information.toLowerCase();
   switch (true) {
     case lower.includes("meta"):
-      await sendMessage(f":perrytheplatpus: Your post {post.ID} got approved for #meta! Here's [a link|hackclub.enterprise.slack.com/ewfrgibgo//frgthn] to it.", user.ID)
+      await sendMessage(`:perrytheplatpus: Your post ${post.ID} got approved for #meta! Here's [a link|hackclub.enterprise.slack.com/ewfrgibgo//frgthn] to it.`, user.ID)
       break;
     case lower.includes("approved"):
-      await sendMessage(f":yay: Your post {post.ID} got approved for #confessions! Here's [a link|efowediverbfuvnfeorghiubdfojrthuit] to it.")
+      await sendMessage(`:yay: Your post ${post.ID} got approved for #confessions! Here's [a link|efowediverbfuvnfeorghiubdfojrthuit] to it.`)
       break;
     case lower.includes("denied"):
-      await sendMessage(f":neocat_sad: Your post {post.ID} was denied, link to the deny message") // TODO: add a thing to check the thread to see if a @crt member added a reason
+      await sendMessage(`:neocat_sad: Your post ${post.ID} was denied, link to the deny message`) // TODO: add a thing to check the thread to see if a @crt member added a reason
       break;
   }
 }
