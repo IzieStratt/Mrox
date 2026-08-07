@@ -1,0 +1,36 @@
+display_information:
+  name: "Confession Bot"
+  description: "Tracks confessions from Prox2 and notifies users of status changes"
+  background_color: "#4B2D83"
+
+features:
+  bot_user:
+    display_name: "Confession Bot"
+    always_online: true
+
+oauth_config:
+  scopes:
+    bot:
+      - chat:write
+      - chat:write.public
+      - im:write
+      - channels:history
+      - channels:read
+      - groups:history
+      - groups:read
+      - im:history
+      - mpim:history
+      - mpim:read
+      - users:read
+      - connections:write
+
+settings:
+  event_subscriptions:
+    bot_events:
+      - message.channels
+      - message.groups
+      - message.im
+      - message.mpim
+  socket_mode_enabled: true
+  org_deploy_enabled: false
+  token_rotation_enabled: false
