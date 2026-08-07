@@ -7,6 +7,8 @@ const web = new WebClient(process.env.SLACK_BOT_TOKEN);
 const defaultchannel = process.env.CHANNEL_TO_USE; // get from .envwait why am i having a feafualt channel lol
 const Channel_Confession_Logs = "C08R8LE6DDG" // real id! hopefully doesnt change or get privated
 const Channel_Confession = "CNMU9L92Q" // why does this look different?
+const Channel_Meta = "C0188CY57PZ"
+const Prox2_Bot_ID = "B09VBHWJF4Z" // app id: A024CV4UZJ4, user id: U023L3A4UKX
 
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
@@ -27,6 +29,7 @@ sendMessage("Hi").catch(console.error);
 // aaaaaaaaa
 async function checkStatus(information: string) { // ok so this needs to be called every new message in that ig because bots dont have pingwords
   const lower = information.toLowerCase(); // idt it needs to be used but hey i can remove it later
+
   switch (true) {
     case lower.includes("approved for meta"):
       await sendMessage(`:perrytheplatpus: Your post ${post.ID} got approved for #meta! Here's [a link|hackclub.enterprise.slack.com/ewfrgibgo//frgthn] to it.`, user.ID)
@@ -37,11 +40,14 @@ async function checkStatus(information: string) { // ok so this needs to be call
       // ok so here we need to mark the post in confessions.json as resolved
       break;
     case lower.includes("rejected"):
-      await sendMessage(`:neocat_sad: Your post ${post.ID} was denied, link to the deny message`) // TODO: add a thing to check the thread to see if a @crt member added a reason
+      await sendMessage(`:neocat_sad: Your post ${post.ID} was denied, link to the deny message.`) // TODO: add a thing to check the thread to see if a @crt member added a reason
+      break;
+    case lower.includes("unapproved"):
+      await sendMessage(`:uuh: Your post ${post.ID} was unapproved and the thread has been nuked.`)
       break;
   }
 }
-
+// call this when a confession is sent to prox2,
 async function confessionMade(infomration: string, userId: string) {
   const lower = infomration.toLowerCase();
   const confessionId = infomration.replace(/\D/g, "");
@@ -51,8 +57,8 @@ async function confessionMade(infomration: string, userId: string) {
   fs.writeFileSync("confessions.json", JSON.stringify(data, null, 2));
 }
 
+// Okay so like here we recieve events when a message from Prox2 (different bot) is sent in dms ig???
 // google made nned to rerewrite
-// Okay so like here we recieve events when a message from Prox2 is sent in dms ig???
 app.event('message', async ({ event, context, logger }) => {
   try {
     //  ignore messages from the bot, something that would never happen but shrug
