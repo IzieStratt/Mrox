@@ -65,12 +65,23 @@ async function confessionMade(infomration: string, userId: string) {
 // TODO: needs to know when something is thread
 app.event('message', async ({ event, context, logger }) => {
   try {
+    if ('user' in event && event.user && event.channel == defaultchannel) { //replace with confession lgos later
+      console.log(`${event.user} ${'text' in event ? event.text : '[No text content]'}`);
+    }
+    else if ('thread_ts' in event && event.thread_ts) {
+      console.log(`threab ${event.thread_ts} from ${event.user}: ${'text' in event ? event.text : '[No text content]'}`);
+    }
+    else if ('user' in event && event.user && event.channel != defaultchannel) {
+      console.log(`:) ${event.user} ${'text' in event ? event.text : '[No text content]'}`);
+    }
+
+
     //  ignore messages from the bot, something that would never happen but shrug
     // should probably make it so we only listen to messages by prox2 here
-    if ('user' in event && event.user !== context.botUserId) {
-      console.log(` New message from user ${event.user} in channel ${event.channel}:`);
-      console.log(`Content: "${'text' in event ? event.text : '[No text content]'}"`);
-    }
+    // if ('user' in event && event.user !== context.botUserId) {
+    //   console.log(` New message from user ${event.user} in channel ${event.channel}:`);
+    //   console.log(`Content: "${'text' in event ? event.text : '[No text content]'}"`);
+    // }
   } catch (error) {
     logger.error('Error handling message event:', error);
   }
