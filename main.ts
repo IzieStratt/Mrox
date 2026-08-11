@@ -62,6 +62,7 @@ async function confessionMade(infomration: string, userId: string) {
 
 // Okay so like here we recieve events when a message from Prox2 (different bot) is sent in dms ig???
 // google made nned to rerewrite
+// TODO: needs to know when something is thread
 app.event('message', async ({ event, context, logger }) => {
   try {
     //  ignore messages from the bot, something that would never happen but shrug
