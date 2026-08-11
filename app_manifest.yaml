@@ -1,11 +1,11 @@
 display_information:
-  name: "Confession Bot"
-  description: "Tracks confessions from Prox2 and notifies users of status changes"
+  name: "Mrox"
+  description: "Monitors prox2 confessions :3"
   background_color: "#4B2D83"
 
 features:
   bot_user:
-    display_name: "Confession Bot"
+    display_name: "Mrox"
     always_online: true
 
 oauth_config:

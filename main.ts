@@ -4,7 +4,7 @@ import { WebClient } from '@slack/web-api';
 import { info } from 'console';
 import fs from 'fs';
 const web = new WebClient(process.env.SLACK_BOT_TOKEN);
-const defaultchannel = process.env.CHANNEL_TO_USE; // get from .envwait why am i having a feafualt channel lol
+const defaultchannel = process.env.CHANNEL_TO_USE; // get from .envwait why am i hav                ng a feafualt channel lol
 const Channel_Confession_Logs = "C08R8LE6DDG" // real id! hopefully doesnt change or get privated
 const Channel_Confession = "CNMU9L92Q" // why does this look different?
 const Channel_Meta = "C0188CY57PZ"
@@ -27,6 +27,8 @@ async function sendMessage(MessageToSend: any, channel: string = defaultchannel!
 
 sendMessage("Hi").catch(console.error);
 // aaaaaaaaa
+
+// detect what the status of the post when we see a new post in Channel_Confession_Logs that matches our tracked confession id
 async function checkStatus(information: string) { // ok so this needs to be called every new message in that ig because bots dont have pingwords
   const lower = information.toLowerCase(); // idt it needs to be used but hey i can remove it later
 
@@ -47,7 +49,8 @@ async function checkStatus(information: string) { // ok so this needs to be call
       break;
   }
 }
-// call this when a confession is sent to prox2,
+
+// we call this when a confession is confirmed either via a command or some sort of user token to see when prox2 sends a message (would allow for eneph messages to be seen to)
 async function confessionMade(infomration: string, userId: string) {
   const lower = infomration.toLowerCase();
   const confessionId = infomration.replace(/\D/g, "");
@@ -81,3 +84,5 @@ app.event('message', async ({ event, context, logger }) => {
 //   dm(user,ConfessionStatus)
 
 // run slack(SLACK_BOT_TOKEN)
+app.start();
+console.log("Bot is running...");
