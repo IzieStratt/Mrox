@@ -55,22 +55,30 @@ async function confessionMade(infomration: string, userId: string) {
   const lower = infomration.toLowerCase();
   const confessionId = infomration.replace(/\D/g, "");
   const data = JSON.parse(fs.readFileSync("confessions.json", "utf-8"));
+  console.log('we weeo')
   const resolved = false // always false till its true then we  save it for maybe two days (add as config at top) then delete incase it gets unapproved and/or threadlocked/threadripped from couminuty logs
   data.push({ id: confessionId, userId, resolved, date: new Date().toISOString() });
   fs.writeFileSync("confessions.json", JSON.stringify(data, null, 2));
+}
+
+async function isdisourconfession(information: string) {
+  // TODO: check if the confession id is the same as one of the things we stored in our db then dm the user a link to it and it's status.
 }
 
 // Okay so like here we recieve events when a message from Prox2 (different bot) is sent in dms ig???
 // google made nned to rerewrite
 // TODO: needs to know when something is thread
 app.event('message', async ({ event, context, logger }) => {
-  try {
+  try { //make this switch case later
     if ('user' in event && event.user && event.channel == defaultchannel) { //replace with confession lgos later
       console.log(`${event.user} ${'text' in event ? event.text : '[No text content]'}`);
+      checkStatus(event.text ?? '');
     }
-    else if ('thread_ts' in event && event.thread_ts) {
-      console.log(`threab ${event.thread_ts} from ${event.user}: ${'text' in event ? event.text : '[No text content]'}`);
-    }
+    // if ('user' in event && event.user && event.channel == defaultchannel) { //replace with confession channel later
+
+    // else if ('thread_ts' in event && event.thread_ts) {
+    //   console.log(`threab ${event.thread_ts} from ${event.user}: ${'text' in event ? event.text : '[No text content]'}`);
+    // }
     else if ('user' in event && event.user && event.channel != defaultchannel) {
       console.log(`:) ${event.user} ${'text' in event ? event.text : '[No text content]'}`);
     }
