@@ -1,8 +1,14 @@
 {
+  "scripts": {
+    "start": "tsx test.ts",
+    "typecheck": "tsc --noEmit --skipLibCheck --esModuleInterop --module nodenext --target es2022 test.ts"
+  },
   "dependencies": {
     "@slack/bolt": "^4.7.3",
     "@slack/web-api": "^7.19.0",
-    "dotenv": "^17.4.2"
+    "@types/js-yaml": "^4.0.9",
+    "dotenv": "^17.4.2",
+    "js-yaml": "^5.4.3"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",
