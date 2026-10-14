@@ -1,0 +1,46 @@
+# Mrox message config.
+# Every message the bot can send lives here.
+# Placeholders (case-sensitive):
+#   {confessionID} - the confession number, e.g. 40289
+#   {status}       - "still being tracked" or "resolved (...)"
+#   {link}         - "" or " <url|View it here>"
+#   {reason}       - "" or "\n> Reason: ..."
+#   {count}        - number of confessions affected (untrack below)
+#   {threshold}    - the cutoff number (untrack below)
+# Channel mentions use the <#C...> syntax Slack renders as a link.
+
+messages:
+  not_allowed: "sorgy u cant do this, dm <@U09KKMHLS15> if this shouldnt have happened"
+
+  slash_help: "to track a confession use `/mrox {id}` (or paste the id into the box on my app home) and ill dm u when its approved, use `/mrox untrack {id}` to untrack somthing"
+  dev_help: "Welcome to dev-mrox! To start tracking a confession please run: `/dev-mrox {id}`"
+  not_yours: "Confession #{confessionID} is already being tracked by someone else."
+
+  already_tracked: "Confession #{confessionID} is {status}."
+  now_tracking: "Now tracking confession #{confessionID}. I'll DM you when its status changes. :neocat:"
+
+  untracked: "Stopped tracking confession #{confessionID}."
+  untrack_missing: "Confession #{confessionID} isn't being tracked."
+  untrack_below: "Stopped tracking {count} confession(s) below #{threshold}."
+
+  approved: ":yay: Your confession #{confessionID} got approved for <#{channel}>!{link}"
+  meta_approved: ":meta: Your confession #{confessionID} got approved for <#{channel}>!{link}"
+  unapproved: ":uuh: Your confession #{confessionID} was unapproved and the thread has been nuked."
+  rejected: ":neocat_sad: Your confession #{confessionID} was denied. Reason (will be blank if none was provided): {reason}"
+
+  # Posted in #confession-logs when a status arrives for an already-resolved
+  # confession (something that "shouldn't be possible"). One picked at random.
+  stupid_lines:
+    - "that confession doesn't exist... yet :eyes:"
+    - "whoa there, that's not supposed to happen. neat."
+    - "you've broken reality. congrats i guess? :neocat_confused:"
+    - "this confession is in a superposition of approved and denied :hyperbongocat:"
+    - "error 404: common sense not found"
+
+home:
+  header: "*Mrox* :meow_blob:
+Paste your confession ID below and press Enter, and I'll DM you when its status changes."
+  follow_title: "*Auto-follow your confession threads*"
+  follow_body: "When your post gets approved, automatically subscribe you to its thread (ping-then-delete) so you get notified of any comments."
+  follow_on: "Currently *ON* - the bot will ping-and-delete in your post's thread when it's approved."
+  follow_off: "Currently *OFF* - you'll just be DMed the result."
