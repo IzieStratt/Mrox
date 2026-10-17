@@ -1,9 +1,9 @@
 [Unit]
-Description=Check for Mrox updates every minute
+Description=Check for Mrox updates once a day
 
 [Timer]
-OnBootSec=1min
-OnUnitActiveSec=1min
+OnCalendar=*-*-* 04:00:00
+Persistent=true
 
 [Install]
 WantedBy=timers.target
