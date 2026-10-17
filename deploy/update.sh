@@ -15,5 +15,5 @@ git pull --ff-only --quiet
 if [ "$LOCK_BEFORE" != "$(git rev-parse HEAD:package-lock.json)" ]; then
   npm ci --no-audit --no-fund
 fi
-systemctl --user restart mrox.service
+sudo -n systemctl restart mrox
 echo "Restarted mrox at $(git rev-parse --short HEAD)"
