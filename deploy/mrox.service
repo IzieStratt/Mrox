@@ -1,14 +1,17 @@
+# Copy of /etc/systemd/system/mrox.service on the server (system-level, runs as gaypeople)
 [Unit]
-Description=Mrox (Slack confession tracker)
+Description=Mrox confession tracker bot
 After=network-online.target
 Wants=network-online.target
 
 [Service]
 Type=simple
-WorkingDirectory=%h/code/mrox
-ExecStart=/usr/bin/env npm start
+User=gaypeople
+WorkingDirectory=/home/gaypeople/code/mrox
+EnvironmentFile=/home/gaypeople/code/mrox/.env
+ExecStart=/home/gaypeople/code/mrox/node_modules/.bin/tsx /home/gaypeople/code/mrox/test.ts
 Restart=on-failure
 RestartSec=5
 
 [Install]
-WantedBy=default.target
+WantedBy=multi-user.target
