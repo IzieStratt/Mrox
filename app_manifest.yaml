@@ -1,31 +1,28 @@
 display_information:
-  name: "Mrox (old)"
-  description: "Monitors prox2 confessions :3"
+  name: "Mrox"
+  description: "Monitors owl confessions :3"
   background_color: "#4B2D83"
 
 features:
   slash_commands:
     - command: /mrox
-      description: Track a confession by id
-      usage_hint: "{id} | untrack {id}"
-      should_escape: false
-    - command: /dev-mrox
-      description: Dev tracking command
-      usage_hint: "{id}"
-      should_escape: false
+      description: Central command for Mrox
+      usage_hint: "Confession ID :D"
+      should_escape: true
   bot_user:
-    display_name: "Mrox (old)"
+    display_name: "Mrox"
     always_online: true
   app_home:
     home_tab_enabled: true
     messages_tab_enabled: true
-    messages_tab_read_only_enabled: true
+    messages_tab_read_only_enabled: false
 oauth_config:
   scopes:
     bot:
       - chat:write
       - chat:write.public
       - im:write
+      - im:history
       - commands
       - channels:history
       - channels:read
@@ -40,6 +37,7 @@ settings:
     bot_events:
       - app_home_opened
       - message.channels
+      - message.im
       - message.groups
   interactivity:
     is_enabled: true

@@ -1,0 +1,7 @@
+[Unit]
+Description=Pull latest Mrox and restart if changed
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/code/mrox
+ExecStart=%h/code/mrox/deploy/update.sh
