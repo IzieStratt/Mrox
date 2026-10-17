@@ -24,6 +24,9 @@ const OWL_BOT_ID = process.env.OWL_BOT_ID ?? "B0C6JPG4W0G";
 const WORKSPACE_DOMAIN =
   process.env.WORKSPACE_DOMAIN ?? "hackclub.enterprise.slack.com";
 
+const PRIVACY_POLICY_URL =
+  "https://hackclub.enterprise.slack.com/docs/T0266FRGM/F0C9ZFGE6U9";
+
 const DATA_FILE = process.env.DATA_FILE ?? path.join(process.cwd(), "confessions.json");
 const SETTINGS_FILE = process.env.SETTINGS_FILE ?? path.join(process.cwd(), "settings.json");
 const CONFIG_FILE = process.env.CONFIG_FILE ?? path.join(process.cwd(), "config.yaml");
@@ -249,7 +252,7 @@ const STUPID_FALLBACK = [
 const FALLBACK_MESSAGES: Record<string, string | string[]> = {
   not_allowed: "You're not allowed to use this.",
   slash_help: "Welcome to Mrox! To start tracking a confession please run: `/mrox {id}`, or paste it into the box on my App Home.",
-  dev_help: "Welcome to dev-mrox! To start tracking a confession please run: `/dev-mrox {id}`",
+  dm_refuse: "sorry! for your security I can't accept ids via dms, please use /mrox or the app home :D",
   not_yours: "Confession #{confessionID} is already being tracked by someone else.",
   already_tracked: "Confession #{confessionID} is {status}.",
   now_tracking: "Now tracking confession #{confessionID}. I'll DM you when its status changes.",
@@ -264,7 +267,7 @@ const FALLBACK_MESSAGES: Record<string, string | string[]> = {
 };
 
 const FALLBACK_HOME: Record<string, string> = {
-  header: "*Mrox* :meow_blob:",
+  header: "*Mrox* :neocat_glasses:",
   follow_title: "*Auto-follow your confession threads*",
   follow_body: "When your post gets approved, you get subscribed to its thread.",
   follow_on: "Currently *ON*.",
@@ -499,21 +502,6 @@ app.command("/mrox", async ({ command, ack, respond }) => {
 });
 
 // ---------------------------------------------------------------------------
-// Slash command: /dev-mrox {id} (test command, no user restriction)
-// ---------------------------------------------------------------------------
-app.command("/dev-mrox", async ({ command, ack, respond }) => {
-  await ack();
-
-  const confessionId = command.text?.trim() ?? "";
-  if (!/^\d+$/.test(confessionId)) {
-    await respond(t("dev_help"));
-    return;
-  }
-
-  await respond(trackConfession(confessionId, command.user_id));
-});
-
-// ---------------------------------------------------------------------------
 // Message listener: react to status updates in the confession logs channel
 // ---------------------------------------------------------------------------
 app.event("message", async ({ event, logger }) => {
@@ -531,7 +519,20 @@ app.event("message", async ({ event, logger }) => {
     const channel: string | undefined = (event as any).channel ?? raw.channel;
     const botId: string | undefined = raw.bot_id;
 
-    log(`[msg] channel=${channel} bot=${botId} text="${text}"`);
+    if (channel === Channel_Confession_Logs) {
+      log(`[msg] channel=${channel} bot=${botId} text="${text}"`);
+    }
+
+    // DMs: never accept ids here (they'd sit in DM history); point to /mrox or App Home.
+    // The incoming text is deliberately not logged or stored.
+    const isDM =
+      (raw as any).channel_type === "im" ||
+      (typeof channel === "string" && channel.startsWith("D"));
+    if (isDM) {
+      if (botId || raw.subtype === "bot_message" || !raw.user) return;
+      await dm(raw.user as string, t("dm_refuse"));
+      return;
+    }
 
     if (!channel || channel !== Channel_Confession_Logs) return;
     if (!text) return;
@@ -567,7 +568,7 @@ function homeView(userId: string, notice?: string) {
       type: "section",
       text: {
         type: "mrkdwn",
-        text: CONFIG.home["header"] ?? "*Mrox* :meow_blob:",
+        text: CONFIG.home["header"] ?? "*Mrox* :neocat_glasses:",
       },
     },
     {
@@ -635,6 +636,11 @@ function homeView(userId: string, notice?: string) {
             : CONFIG.home["follow_off"] ?? "Currently *OFF*.",
         },
       ],
+    },
+    { type: "divider" },
+    {
+      type: "context",
+      elements: [{ type: "mrkdwn", text: `<${PRIVACY_POLICY_URL}|Privacy policy>` }],
     }
   );
   return { type: "home" as const, blocks };

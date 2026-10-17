@@ -1,0 +1,14 @@
+[Unit]
+Description=Mrox (Slack confession tracker)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/code/mrox
+ExecStart=/usr/bin/env npm start
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

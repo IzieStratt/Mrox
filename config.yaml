@@ -13,7 +13,7 @@ messages:
   not_allowed: "sorgy u cant do this, dm <@U09KKMHLS15> if this shouldnt have happened"
 
   slash_help: "to track a confession use `/mrox {id}` (or paste the id into the box on my app home) and ill dm u when its approved, use `/mrox untrack {id}` to untrack somthing"
-  dev_help: "Welcome to dev-mrox! To start tracking a confession please run: `/dev-mrox {id}`"
+  dm_refuse: "sorry! for your security I can't accept ids via dms, please use /mrox or the app home :D"
   not_yours: "Confession #{confessionID} is already being tracked by someone else."
 
   already_tracked: "Confession #{confessionID} is {status}."
@@ -38,7 +38,7 @@ messages:
     - "error 404: common sense not found"
 
 home:
-  header: "*Mrox* :meow_blob:
+  header: "*Mrox* :neocat_glasses:
 Paste your confession ID below and press Enter, and I'll DM you when its status changes."
   follow_title: "*Auto-follow your confession threads*"
   follow_body: "When your post gets approved, automatically subscribe you to its thread (ping-then-delete) so you get notified of any comments."

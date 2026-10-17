@@ -1,3 +1,5 @@
 .env
 node_modules/
 CHECKLIST.md
+confessions.json
+settings.json
