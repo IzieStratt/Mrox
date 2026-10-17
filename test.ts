@@ -327,7 +327,7 @@ function extractId(text: string): string | undefined {
   return m?.[1];
 }
 
-// Search #confessions then #meta for the message containing `#<id>`
+// Search #confessions then #meta for the Owl post that starts with `<id>:`
 async function findPostTs(id: string): Promise<string | undefined> {
   for (const channel of [Channel_Confessions, Channel_Meta]) {
     try {
@@ -339,7 +339,8 @@ async function findPostTs(id: string): Promise<string | undefined> {
           cursor,
         });
         for (const m of res.messages ?? []) {
-          if (typeof m.text === "string" && m.text.includes(`#${id}`)) {
+          // Owl posts confessions as "40957: text..."
+          if (typeof m.text === "string" && m.text.startsWith(`${id}:`)) {
             return m.ts ?? undefined;
           }
         }
@@ -426,7 +427,9 @@ interface StatusResult {
 
 function classify(information: string): StatusResult {
   const lower = information.toLowerCase();
-  if (lower.includes("approved for meta")) return { kind: "meta" };
+  // Owl writes "approved to <#CHANNEL>"; the meta channel means a meta approval
+  if (lower.includes("approved") && information.includes(`<#${Channel_Meta}`))
+    return { kind: "meta" };
   if (lower.includes("unapproved")) return { kind: "unapproved" };
   if (lower.includes("approved")) return { kind: "approved" };
   if (lower.includes("rejected") || lower.includes("denied"))
