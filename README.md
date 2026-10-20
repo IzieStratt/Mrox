@@ -63,8 +63,9 @@ point at throwaway channels.
 
 ## Data
 
-- `confessions.json` — tracked confessions (`id`, `userId`, `resolved`, `date`,
-  `postTs`, `status`). Writes are atomic.
+- `confessions.json` — tracked confessions (`id`, `userId`, `dmChannel`, `resolved`,
+  `date`, `postTs`, `status`). `dmChannel` is the DM channel opened with the
+  owner on first notification and reused after that. Writes are atomic.
 - `settings.json` — per-user preferences (App Home toggle).
 
 ## Notes
