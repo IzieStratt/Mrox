@@ -88,6 +88,7 @@ function ensureFiles() {
 interface Confession {
   id: string;
   userId: string;
+  dmChannel?: string; // DM channel id with the user (opened once, then reused)
   resolved: boolean;
   date: string;
   postTs?: string; // ts of the confession message (for links / thread ops)
@@ -310,13 +311,28 @@ function messageLink(channel: string, ts: string): string {
   return `https://${WORKSPACE_DOMAIN}/archives/${channel}/p${ts.replace(".", "")}`;
 }
 
-async function dm(userId: string, text: string) {
+// Get the DM channel for a confession's owner, opening it once and storing it
+async function openDmChannel(post: Confession): Promise<string | undefined> {
+  if (post.dmChannel) return post.dmChannel;
   try {
-    const res = await web.chat.postMessage({ channel: userId, text });
-    log(`DM sent to ${userId}: ${res.ts}`);
+    const res = await web.conversations.open({ users: post.userId });
+    const channel = res.channel?.id;
+    if (channel) updateConfession(post.id, { dmChannel: channel });
+    return channel;
+  } catch (error) {
+    err(`Failed to open DM for ${post.id}:`, error);
+    return undefined;
+  }
+}
+
+async function dm(channel: string | undefined, text: string) {
+  if (!channel) return undefined;
+  try {
+    const res = await web.chat.postMessage({ channel, text });
+    log(`DM sent to ${channel}: ${res.ts}`);
     return res;
   } catch (error) {
-    err(`Failed to DM ${userId}:`, error);
+    err(`Failed to DM ${channel}:`, error);
     return undefined;
   }
 }
@@ -453,17 +469,19 @@ async function checkStatus(information: string, post: Confession, statusTs: stri
     return;
   }
 
+  const dmChannel = await openDmChannel(post);
+
   if (kind === "meta") {
     const ts = await resolvePostTs(post);
     setResolved(post.id, "meta");
     const link = ts ? ` <${messageLink(Channel_Meta, ts)}|View it here>` : "";
     await dm(
-      post.userId,
+      dmChannel,
       t("meta_approved", { confessionID: post.id, channel: Channel_Meta, link })
     );
   } else if (kind === "unapproved") {
     setResolved(post.id, "unapproved");
-    await dm(post.userId, t("unapproved", { confessionID: post.id }));
+    await dm(dmChannel, t("unapproved", { confessionID: post.id }));
   } else if (kind === "approved") {
     const ts = await resolvePostTs(post);
     setResolved(post.id, "approved");
@@ -471,7 +489,7 @@ async function checkStatus(information: string, post: Confession, statusTs: stri
       ? ` <${messageLink(Channel_Confessions, ts)}|View it here>`
       : "";
     await dm(
-      post.userId,
+      dmChannel,
       t("approved", { confessionID: post.id, channel: Channel_Confessions, link })
     );
     if (getSubscribeThread(post.userId)) {
@@ -481,7 +499,7 @@ async function checkStatus(information: string, post: Confession, statusTs: stri
     const reason = await getDenialReason(statusTs);
     setResolved(post.id, "rejected");
     await dm(
-      post.userId,
+      dmChannel,
       t("rejected", {
         confessionID: post.id,
         reason: reason ? `\n> Reason: ${reason}` : "",
@@ -533,7 +551,7 @@ app.event("message", async ({ event, logger }) => {
       (typeof channel === "string" && channel.startsWith("D"));
     if (isDM) {
       if (botId || raw.subtype === "bot_message" || !raw.user) return;
-      await dm(raw.user as string, t("dm_refuse"));
+      await dm(channel, t("dm_refuse"));
       return;
     }
 
