@@ -39,7 +39,3 @@ messages:
 
 home:
   header: "*Mrox* :neocat_glasses:\nPaste your confession ID below and press Enter, and I'll DM you when its status changes."
-  follow_title: "*Auto-follow your confession threads*"
-  follow_body: "When your post gets approved, automatically subscribe you to its thread (ping-then-delete) so you get notified of any comments."
-  follow_on: "Currently *ON* - the bot will ping-and-delete in your post's thread when it's approved."
-  follow_off: "Currently *OFF* - you'll just be DMed the result."
