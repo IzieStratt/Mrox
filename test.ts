@@ -28,7 +28,6 @@ const PRIVACY_POLICY_URL =
   "https://hackclub.enterprise.slack.com/docs/T0266FRGM/F0C9ZFGE6U9";
 
 const DATA_FILE = process.env.DATA_FILE ?? path.join(process.cwd(), "confessions.json");
-const SETTINGS_FILE = process.env.SETTINGS_FILE ?? path.join(process.cwd(), "settings.json");
 const CONFIG_FILE = process.env.CONFIG_FILE ?? path.join(process.cwd(), "config.yaml");
 
 const RETENTION_MS = 2 * 24 * 60 * 60 * 1000; // keep resolved confessions 2 days
@@ -79,7 +78,6 @@ function readJson<T>(file: string, fallback: T): T {
 
 function ensureFiles() {
   if (!fs.existsSync(DATA_FILE)) writeJsonAtomic(DATA_FILE, []);
-  if (!fs.existsSync(SETTINGS_FILE)) writeJsonAtomic(SETTINGS_FILE, {});
 }
 
 // ---------------------------------------------------------------------------
@@ -210,33 +208,6 @@ function cleanup(oldMs: number = RETENTION_MS) {
 }
 
 // ---------------------------------------------------------------------------
-// Per-user settings
-// ---------------------------------------------------------------------------
-interface Settings {
-  [userId: string]: {
-    subscribeThread: boolean; // ping + delete to follow the thread
-  };
-}
-
-function readSettings(): Settings {
-  return readJson<Settings>(SETTINGS_FILE, {});
-}
-
-function writeSettings(data: Settings) {
-  writeJsonAtomic(SETTINGS_FILE, data);
-}
-
-function getSubscribeThread(userId: string): boolean {
-  return readSettings()[userId]?.subscribeThread ?? false; // default false
-}
-
-function setSubscribeThread(userId: string, value: boolean) {
-  const s = readSettings();
-  s[userId] = { ...(s[userId] ?? {}), subscribeThread: value };
-  writeSettings(s);
-}
-
-// ---------------------------------------------------------------------------
 // Message config (config.yaml) + templating
 // ---------------------------------------------------------------------------
 interface BotConfig {
@@ -268,10 +239,6 @@ const FALLBACK_MESSAGES: Record<string, string | string[]> = {
 
 const FALLBACK_HOME: Record<string, string> = {
   header: "*Mrox* :neocat_glasses:",
-  follow_title: "*Auto-follow your confession threads*",
-  follow_body: "When your post gets approved, you get subscribed to its thread.",
-  follow_on: "Currently *ON*.",
-  follow_off: "Currently *OFF*.",
 };
 
 function loadConfig(): BotConfig {
@@ -360,28 +327,6 @@ async function resolvePostTs(post: Confession): Promise<string | undefined> {
   const ts = await findPostTs(post.id);
   if (ts) updateConfession(post.id, { postTs: ts });
   return ts;
-}
-
-// Ping the user in a thread then instantly delete it to subscribe them silently
-async function subscribeToThread(post: Confession) {
-  const ts = await resolvePostTs(post);
-  if (!ts) {
-    log(`No postTs for ${post.id}; cannot subscribe to thread`);
-    return;
-  }
-  try {
-    const msg = await web.chat.postMessage({
-      channel: Channel_Confessions,
-      thread_ts: ts,
-      text: `<@${post.userId}>`,
-    });
-    if (msg.ts) {
-      await web.chat.delete({ channel: Channel_Confessions, ts: msg.ts });
-      log(`Subscribed ${post.userId} to thread of confession ${post.id}`);
-    }
-  } catch (error) {
-    warn(`Thread subscribe failed for ${post.id}:`, error);
-  }
 }
 
 // Pull the denial reason: the first non-bot reply in the status message's thread
@@ -474,9 +419,6 @@ async function checkStatus(information: string, post: Confession, statusTs: stri
       post.userId,
       t("approved", { confessionID: post.id, channel: Channel_Confessions, link })
     );
-    if (getSubscribeThread(post.userId)) {
-      await subscribeToThread({ ...post, postTs: ts });
-    }
   } else if (kind === "rejected") {
     const reason = await getDenialReason(statusTs);
     setResolved(post.id, "rejected");
@@ -561,10 +503,9 @@ app.event("message", async ({ event, logger }) => {
 });
 
 // ---------------------------------------------------------------------------
-// App Home: thread-subscribe toggle
+// App Home: track box
 // ---------------------------------------------------------------------------
 function homeView(userId: string, notice?: string) {
-  const subscribe = getSubscribeThread(userId);
   const tracked = trackedBy(userId);
   const blocks: any[] = [
     {
@@ -617,31 +558,6 @@ function homeView(userId: string, notice?: string) {
   blocks.push(
     { type: "divider" },
     {
-      type: "section",
-      text: {
-        type: "mrkdwn",
-        text: `${CONFIG.home["follow_title"] ?? ""}\n${CONFIG.home["follow_body"] ?? ""}`,
-      },
-      accessory: {
-        type: "button",
-        text: { type: "plain_text", text: subscribe ? "ON" : "OFF", emoji: true },
-        action_id: "toggle_thread_subscribe",
-        style: subscribe ? "primary" : "danger",
-      },
-    },
-    {
-      type: "context",
-      elements: [
-        {
-          type: "mrkdwn",
-          text: subscribe
-            ? CONFIG.home["follow_on"] ?? "Currently *ON*."
-            : CONFIG.home["follow_off"] ?? "Currently *OFF*.",
-        },
-      ],
-    },
-    { type: "divider" },
-    {
       type: "context",
       elements: [{ type: "mrkdwn", text: `<${PRIVACY_POLICY_URL}|Privacy policy>` }],
     }
@@ -657,15 +573,6 @@ app.event("app_home_opened", async ({ event, client }) => {
   } catch (error) {
     err("Failed to publish home view:", error);
   }
-});
-
-app.action("toggle_thread_subscribe", async ({ ack, body, client }) => {
-  await ack();
-  const userId = (body as { user: { id: string } }).user.id;
-  const newValue = !getSubscribeThread(userId);
-  setSubscribeThread(userId, newValue);
-  await client.views.publish({ user_id: userId, view: homeView(userId) });
-  log(`Set thread subscribe=${newValue} for ${userId}`);
 });
 
 // Type/paste a confession id into the App Home box (also accepts "untrack ...")

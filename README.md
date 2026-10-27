@@ -20,9 +20,6 @@ Currently implemented in **`test.ts`** (the actively-developed version).
   - Approved for meta → link in `#meta`
   - Denied → includes the reason pulled from the log thread
   - Unapproved → thread-nuked notice
-- **Auto-follow thread** (optional, App Home toggle, default OFF): on approval,
-  silently subscribes the submitter to the post's thread by pinging then
-  instantly deleting the ping.
 - Marks confessions resolved and purges them 2 days later.
 - Easter egg for impossible states (a status update on an already-resolved
   confession).
@@ -65,7 +62,6 @@ point at throwaway channels.
 
 - `confessions.json` — tracked confessions (`id`, `userId`, `resolved`, `date`,
   `postTs`, `status`). Writes are atomic.
-- `settings.json` — per-user preferences (App Home toggle).
 
 ## Notes
 
