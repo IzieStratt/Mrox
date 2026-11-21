@@ -200,11 +200,13 @@ function parseUntrack(text: string): { id?: string; below?: number } | undefined
 // Delete resolved entries older than the retention window
 function cleanup(oldMs: number = RETENTION_MS) {
   const now = Date.now();
-  const data = readConfessions().filter((c) => {
+  const all = readConfessions();
+  const data = all.filter((c) => {
     if (c.resolved && now - new Date(c.date).getTime() > oldMs) return false;
     return true;
   });
-  writeConfessions(data);
+  // Only rewrite the file when something actually expired (runs hourly)
+  if (data.length !== all.length) writeConfessions(data);
 }
 
 // ---------------------------------------------------------------------------
