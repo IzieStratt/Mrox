@@ -1,7 +1,9 @@
+# Copy of /etc/systemd/system/mrox-update.service on the server (system-level, runs as gaypeople)
 [Unit]
 Description=Pull latest Mrox and restart if changed
 
 [Service]
 Type=oneshot
-WorkingDirectory=%h/code/mrox
-ExecStart=%h/code/mrox/deploy/update.sh
+User=gaypeople
+WorkingDirectory=/home/gaypeople/code/mrox
+ExecStart=/home/gaypeople/code/mrox/deploy/update.sh
