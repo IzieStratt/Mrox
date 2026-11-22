@@ -1,0 +1,32 @@
+[package]
+name = "mrox"
+version = "0.1.0"
+edition = "2021"
+description = "Rust port of the mrox confession-tracker Slack bot"
+publish = false
+
+[[bin]]
+name = "mrox"
+path = "src/main.rs"
+
+[dependencies]
+tokio = { version = "1", default-features = false, features = ["rt", "macros", "time", "net", "sync", "io-util"] }
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "json"] }
+tokio-tungstenite = { version = "0.26", features = ["rustls-tls-webpki-roots"] }
+futures-util = { version = "0.3", default-features = false, features = ["sink", "std"] }
+rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12"] }
+serde_json = { version = "1", features = ["preserve_order"] }
+yaml-rust2 = "0.10"
+regex-lite = "0.1"
+dotenvy = "0.15"
+chrono = { version = "0.4", default-features = false, features = ["clock", "std"] }
+fastrand = "2"
+
+[dev-dependencies]
+tokio = { version = "1", features = ["test-util"] }
+
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+strip = true

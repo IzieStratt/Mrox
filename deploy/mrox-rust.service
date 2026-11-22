@@ -1,0 +1,18 @@
+# Copy of the Rust unit (system-level, runs as gaypeople). Same user, paths and env file as mrox.service; ExecStart
+# runs the release binary built in rust/. Run this unit or mrox.service, never both (see README "Switching to Rust").
+[Unit]
+Description=Mrox confession tracker bot (Rust)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=gaypeople
+WorkingDirectory=/home/gaypeople/code/mrox
+EnvironmentFile=/home/gaypeople/code/mrox/.env
+ExecStart=/home/gaypeople/code/mrox/rust/target/release/mrox
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,1878 @@
+{
+  "stupid": [
+    "that confession doesn't exist... yet :eyes:",
+    "whoa there, that's not supposed to happen. neat.",
+    "you've broken reality. congrats i guess? :neocat_confused:",
+    "this confession is in a superposition of approved and denied :hyperbongocat:",
+    "error 404: common sense not found"
+  ],
+  "scenarios": [
+    {
+      "name": "track, approve with link, re-track",
+      "restrict": true,
+      "verify": false,
+      "userToken": false,
+      "data": "[]",
+      "replies": {
+        "conversations.history": [
+          {
+            "ok": true,
+            "messages": [
+              {
+                "text": "40101: other",
+                "ts": "1.1"
+              },
+              {
+                "text": "40102: hi",
+                "ts": "1700000000.000100"
+              }
+            ],
+            "response_metadata": {
+              "next_cursor": ""
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "kind": "command",
+          "payload": {
+            "command": "/mrox",
+            "text": "40102",
+            "user_id": "U00000TEST",
+            "response_url": "https://hooks.example/resp"
+          }
+        },
+        {
+          "kind": "message",
+          "event": {
+            "type": "message",
+            "ts": "1700000500.000200",
+            "channel": "C08R8LE6DDG",
+            "bot_id": "B0C6JPG4W0G",
+            "text": "Confession #40102 was approved to <#CNMU9L92Q>"
+          }
+        },
+        {
+          "kind": "command",
+          "payload": {
+            "command": "/mrox",
+            "text": "#40102",
+            "user_id": "U00000TEST",
+            "response_url": "https://hooks.example/resp"
+          }
+        }
+      ],
+      "expected": [
+        "{\"calls\":{\"conversations.history\":[{\"channel\":\"C08R8LE6DDG\",\"limit\":200}]},\"responded\":[[\"https://hooks.example/resp\",{\"text\":\"Now tracking confession #40102. I'll DM you when its status changes. :neocat:\"}]],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40102\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  }\\n]\"}",
+        "{\"calls\":{\"chat.postMessage\":[{\"channel\":\"U00000TEST\",\"text\":\":yay: Your confession #40102 got approved for <#CNMU9L92Q>!\"}],\"conversations.history\":[{\"channel\":\"CNMU9L92Q\",\"limit\":200},{\"channel\":\"C0188CY57PZ\",\"limit\":200}]},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40102\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": true,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"status\\\": \\\"approved\\\"\\n  }\\n]\"}",
+        "{\"calls\":{},\"responded\":[[\"https://hooks.example/resp\",{\"text\":\"Confession #40102 is resolved (approved).\"}]],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40102\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": true,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"status\\\": \\\"approved\\\"\\n  }\\n]\"}"
+      ]
+    },
+    {
+      "name": "meta approval: confessions page, then meta page",
+      "restrict": true,
+      "verify": false,
+      "userToken": false,
+      "data": "[{\"id\":\"40103\",\"userId\":\"U1\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.605Z\"}]",
+      "replies": {
+        "conversations.history": [
+          {
+            "ok": true,
+            "messages": [],
+            "response_metadata": {
+              "next_cursor": ""
+            }
+          },
+          {
+            "ok": true,
+            "messages": [
+              {
+                "text": "40103: meta post",
+                "ts": "1700.5"
+              }
+            ],
+            "response_metadata": {
+              "next_cursor": ""
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "kind": "message",
+          "event": {
+            "type": "message",
+            "ts": "1700000500.000200",
+            "channel": "C08R8LE6DDG",
+            "bot_id": "B0C6JPG4W0G",
+            "text": "40103 approved to <#C0188CY57PZ>"
+          }
+        }
+      ],
+      "expected": [
+        "{\"calls\":{\"chat.postMessage\":[{\"channel\":\"U1\",\"text\":\":meta: Your confession #40103 got approved for <#C0188CY57PZ>! <https://hackclub.enterprise.slack.com/archives/C0188CY57PZ/p17005|View it here>\"}],\"conversations.history\":[{\"channel\":\"CNMU9L92Q\",\"limit\":200},{\"channel\":\"C0188CY57PZ\",\"limit\":200}]},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40103\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": true,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"postTs\\\": \\\"1700.5\\\",\\n    \\\"status\\\": \\\"meta\\\"\\n  }\\n]\"}"
+      ]
+    },
+    {
+      "name": "denial waits for the reviewer, then quotes only the reviewer",
+      "restrict": true,
+      "verify": false,
+      "userToken": false,
+      "data": "[{\"id\":\"40104\",\"userId\":\"U1\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.605Z\"}]",
+      "replies": {
+        "conversations.replies": [
+          {
+            "ok": true,
+            "messages": [
+              {
+                "text": "40104 denied",
+                "ts": "1700000500.000200"
+              },
+              {
+                "text": "bot note",
+                "bot_id": "B9"
+              },
+              {
+                "text": "   ",
+                "user": "U_H"
+              },
+              {
+                "text": "  too spicy  ",
+                "user": "U_H"
+              }
+            ],
+            "response_metadata": {
+              "next_cursor": ""
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "kind": "message",
+          "event": {
+            "type": "message",
+            "ts": "1700000500.000200",
+            "channel": "C08R8LE6DDG",
+            "bot_id": "B0C6JPG4W0G",
+            "text": "40104 denied"
+          }
+        },
+        {
+          "kind": "advance",
+          "ms": 90000
+        }
+      ],
+      "expected": [
+        "{\"calls\":{},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40104\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"pendingReject\\\": {\\n      \\\"statusTs\\\": \\\"1700000500.000200\\\",\\n      \\\"at\\\": \\\"<ISO>\\\"\\n    }\\n  }\\n]\"}",
+        "{\"calls\":{\"chat.postMessage\":[{\"channel\":\"U1\",\"text\":\":neocat_sad: Your confession #40104 was denied. Reason (will be blank if none was provided): \\n> too spicy <https://hackclub.enterprise.slack.com/archives/C08R8LE6DDG/p1700000500000200|View the thread>\"}],\"conversations.replies\":[{\"channel\":\"C08R8LE6DDG\",\"ts\":\"1700000500.000200\"}]},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40104\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": true,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"status\\\": \\\"rejected\\\"\\n  }\\n]\"}"
+      ]
+    },
+    {
+      "name": "unapproved, denial without a reason",
+      "restrict": true,
+      "verify": false,
+      "userToken": false,
+      "data": "[{\"id\":\"40105\",\"userId\":\"U1\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.605Z\"},{\"id\":\"40106\",\"userId\":\"U1\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.605Z\"}]",
+      "replies": {},
+      "steps": [
+        {
+          "kind": "message",
+          "event": {
+            "type": "message",
+            "ts": "1700000500.000200",
+            "channel": "C08R8LE6DDG",
+            "bot_id": "B0C6JPG4W0G",
+            "text": "40105 unapproved"
+          }
+        },
+        {
+          "kind": "message",
+          "event": {
+            "type": "message",
+            "ts": "1700000500.000200",
+            "channel": "C08R8LE6DDG",
+            "bot_id": "B0C6JPG4W0G",
+            "text": "40106 rejected"
+          }
+        },
+        {
+          "kind": "advance",
+          "ms": 90000
+        }
+      ],
+      "expected": [
+        "{\"calls\":{\"chat.postMessage\":[{\"channel\":\"U1\",\"text\":\":uuh: Your confession #40105 was unapproved and the thread has been nuked.\"}]},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40105\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": true,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"status\\\": \\\"unapproved\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40106\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  }\\n]\"}",
+        "{\"calls\":{},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40105\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": true,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"status\\\": \\\"unapproved\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40106\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"pendingReject\\\": {\\n      \\\"statusTs\\\": \\\"1700000500.000200\\\",\\n      \\\"at\\\": \\\"<ISO>\\\"\\n    }\\n  }\\n]\"}",
+        "{\"calls\":{\"chat.postMessage\":[{\"channel\":\"U1\",\"text\":\":neocat_sad: Your confession #40106 was denied. Reason (will be blank if none was provided):  <https://hackclub.enterprise.slack.com/archives/C08R8LE6DDG/p1700000500000200|View the thread>\"}],\"conversations.replies\":[{\"channel\":\"C08R8LE6DDG\",\"ts\":\"1700000500.000200\"}]},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40105\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": true,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"status\\\": \\\"unapproved\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40106\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": true,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"status\\\": \\\"rejected\\\"\\n  }\\n]\"}"
+      ]
+    },
+    {
+      "name": "status for a resolved confession gets a stupid line",
+      "restrict": true,
+      "verify": false,
+      "userToken": false,
+      "data": "[{\"id\":\"40107\",\"userId\":\"U1\",\"resolved\":true,\"date\":\"2026-11-22T02:16:43.605Z\",\"status\":\"approved\"}]",
+      "replies": {},
+      "steps": [
+        {
+          "kind": "message",
+          "event": {
+            "type": "message",
+            "ts": "1700000500.000200",
+            "channel": "C08R8LE6DDG",
+            "bot_id": "B0C6JPG4W0G",
+            "text": "40107 approved to <#CNMU9L92Q>"
+          }
+        }
+      ],
+      "expected": [
+        "{\"calls\":{\"chat.postMessage\":[{\"channel\":\"C08R8LE6DDG\",\"text\":\"<STUPID>\",\"thread_ts\":\"1700000500.000200\"}]},\"responded\":[],\"data\":\"[{\\\"id\\\":\\\"40107\\\",\\\"userId\\\":\\\"U1\\\",\\\"resolved\\\":true,\\\"date\\\":\\\"<ISO>\\\",\\\"status\\\":\\\"approved\\\"}]\"}"
+      ]
+    },
+    {
+      "name": "untrusted senders, DMs and other channels",
+      "restrict": true,
+      "verify": false,
+      "userToken": false,
+      "data": "[{\"id\":\"40108\",\"userId\":\"U1\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.605Z\"}]",
+      "replies": {},
+      "steps": [
+        {
+          "kind": "message",
+          "event": {
+            "type": "message",
+            "ts": "1700000500.000200",
+            "channel": "C08R8LE6DDG",
+            "user": "U_H",
+            "text": "40108 unapproved"
+          }
+        },
+        {
+          "kind": "message",
+          "event": {
+            "type": "message",
+            "ts": "1700000500.000200",
+            "channel": "C08R8LE6DDG",
+            "bot_id": "B_OTHER",
+            "text": "40108 unapproved"
+          }
+        },
+        {
+          "kind": "message",
+          "event": {
+            "type": "message",
+            "ts": "1700000500.000200",
+            "channel": "D1",
+            "channel_type": "im",
+            "user": "U5",
+            "text": "40108"
+          }
+        },
+        {
+          "kind": "message",
+          "event": {
+            "type": "message",
+            "ts": "1700000500.000200",
+            "channel": "D1",
+            "bot_id": "B1",
+            "text": "x"
+          }
+        },
+        {
+          "kind": "message",
+          "event": {
+            "type": "message",
+            "ts": "1700000500.000200",
+            "channel": "C_OTHER",
+            "bot_id": "B0C6JPG4W0G",
+            "text": "40108 unapproved"
+          }
+        }
+      ],
+      "expected": [
+        "{\"calls\":{},\"responded\":[],\"data\":\"[{\\\"id\\\":\\\"40108\\\",\\\"userId\\\":\\\"U1\\\",\\\"resolved\\\":false,\\\"date\\\":\\\"<ISO>\\\"}]\"}",
+        "{\"calls\":{},\"responded\":[],\"data\":\"[{\\\"id\\\":\\\"40108\\\",\\\"userId\\\":\\\"U1\\\",\\\"resolved\\\":false,\\\"date\\\":\\\"<ISO>\\\"}]\"}",
+        "{\"calls\":{\"chat.postMessage\":[{\"channel\":\"U5\",\"text\":\"sorry! for your security I can't accept ids via dms, please use /mrox or the app home :D\"}]},\"responded\":[],\"data\":\"[{\\\"id\\\":\\\"40108\\\",\\\"userId\\\":\\\"U1\\\",\\\"resolved\\\":false,\\\"date\\\":\\\"<ISO>\\\"}]\"}",
+        "{\"calls\":{},\"responded\":[],\"data\":\"[{\\\"id\\\":\\\"40108\\\",\\\"userId\\\":\\\"U1\\\",\\\"resolved\\\":false,\\\"date\\\":\\\"<ISO>\\\"}]\"}",
+        "{\"calls\":{},\"responded\":[],\"data\":\"[{\\\"id\\\":\\\"40108\\\",\\\"userId\\\":\\\"U1\\\",\\\"resolved\\\":false,\\\"date\\\":\\\"<ISO>\\\"}]\"}"
+      ]
+    },
+    {
+      "name": "app home, track box and untrack buttons",
+      "restrict": true,
+      "verify": false,
+      "userToken": false,
+      "data": "[{\"id\":\"40000\",\"userId\":\"U00000TEST\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.605Z\"},{\"id\":\"40001\",\"userId\":\"U00000TEST\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.605Z\"},{\"id\":\"40002\",\"userId\":\"U00000TEST\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.605Z\"},{\"id\":\"40003\",\"userId\":\"U00000TEST\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.605Z\"},{\"id\":\"40004\",\"userId\":\"U00000TEST\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.605Z\"},{\"id\":\"40005\",\"userId\":\"U00000TEST\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.605Z\"},{\"id\":\"40006\",\"userId\":\"U00000TEST\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.605Z\"},{\"id\":\"40007\",\"userId\":\"U00000TEST\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.605Z\"},{\"id\":\"40008\",\"userId\":\"U00000TEST\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.605Z\"},{\"id\":\"40009\",\"userId\":\"U00000TEST\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.605Z\"},{\"id\":\"40010\",\"userId\":\"U00000TEST\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.605Z\"},{\"id\":\"40011\",\"userId\":\"U00000TEST\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.605Z\"},{\"id\":\"40012\",\"userId\":\"U00000TEST\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.605Z\"},{\"id\":\"40013\",\"userId\":\"U00000TEST\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.605Z\"},{\"id\":\"40014\",\"userId\":\"U00000TEST\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.605Z\"},{\"id\":\"40015\",\"userId\":\"U00000TEST\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.605Z\"},{\"id\":\"40016\",\"userId\":\"U00000TEST\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.605Z\"},{\"id\":\"40017\",\"userId\":\"U00000TEST\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.605Z\"},{\"id\":\"40018\",\"userId\":\"U00000TEST\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.605Z\"},{\"id\":\"40019\",\"userId\":\"U00000TEST\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.605Z\"},{\"id\":\"40020\",\"userId\":\"U00000TEST\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.605Z\"},{\"id\":\"40021\",\"userId\":\"U00000TEST\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.605Z\"},{\"id\":\"40022\",\"userId\":\"U00000TEST\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.605Z\"},{\"id\":\"40023\",\"userId\":\"U00000TEST\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.605Z\"},{\"id\":\"40024\",\"userId\":\"U00000TEST\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.605Z\"},{\"id\":\"1\",\"userId\":\"U00000TEST\",\"resolved\":true,\"date\":\"2026-11-22T02:16:43.605Z\",\"status\":\"meta\"},{\"id\":\"2\",\"userId\":\"U_OTHER\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.605Z\"}]",
+      "replies": {},
+      "steps": [
+        {
+          "kind": "home",
+          "event": {
+            "type": "app_home_opened",
+            "user": "U00000TEST"
+          }
+        },
+        {
+          "kind": "track",
+          "body": {
+            "user": {
+              "id": "U00000TEST"
+            }
+          },
+          "action": {
+            "action_id": "track_confession_input",
+            "value": "  40102 "
+          }
+        },
+        {
+          "kind": "track",
+          "body": {
+            "user": {
+              "id": "U00000TEST"
+            }
+          },
+          "action": {
+            "action_id": "track_confession_input",
+            "value": "   "
+          }
+        },
+        {
+          "kind": "untrack",
+          "body": {
+            "user": {
+              "id": "U00000TEST"
+            }
+          },
+          "action": {
+            "action_id": "untrack_confession",
+            "value": "40109"
+          }
+        },
+        {
+          "kind": "track",
+          "body": {
+            "user": {
+              "id": "U00000TEST"
+            }
+          },
+          "action": {
+            "action_id": "track_confession_input",
+            "value": "untrack below 40010"
+          }
+        },
+        {
+          "kind": "home",
+          "event": {
+            "type": "app_home_opened",
+            "user": "U00000TEST"
+          }
+        }
+      ],
+      "expected": [
+        "{\"calls\":{\"views.publish\":[{\"user_id\":\"U00000TEST\",\"view\":{\"type\":\"home\",\"blocks\":[{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"*Mrox* :neocat_glasses:\\nPaste your confession ID below and press Enter, and I'll DM you when its status changes.\"}},{\"type\":\"input\",\"block_id\":\"track_input_<N>\",\"dispatch_action\":true,\"label\":{\"type\":\"plain_text\",\"text\":\"Track a confession\"},\"element\":{\"type\":\"plain_text_input\",\"action_id\":\"track_confession_input\",\"placeholder\":{\"type\":\"plain_text\",\"text\":\"Paste a confession ID, e.g. 40289\"},\"dispatch_action_config\":{\"trigger_actions_on\":[\"on_enter_pressed\"]}}},{\"type\":\"divider\"},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"*Being tracked*\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40000\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40000\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40001\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40001\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40002\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40002\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40003\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40003\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40004\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40004\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40005\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40005\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40006\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40006\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40007\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40007\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40008\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40008\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40009\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40009\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40010\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40010\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40011\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40011\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40012\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40012\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40013\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40013\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40014\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40014\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40015\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40015\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40016\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40016\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40017\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40017\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40018\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40018\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40019\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40019\"}},{\"type\":\"divider\"},{\"type\":\"context\",\"elements\":[{\"type\":\"mrkdwn\",\"text\":\"<https://hackclub.enterprise.slack.com/docs/T0266FRGM/F0C9ZFGE6U9|Privacy policy>\"}]}]}}]},\"responded\":[],\"data\":\"[{\\\"id\\\":\\\"40000\\\",\\\"userId\\\":\\\"U00000TEST\\\",\\\"resolved\\\":false,\\\"date\\\":\\\"<ISO>\\\"},{\\\"id\\\":\\\"40001\\\",\\\"userId\\\":\\\"U00000TEST\\\",\\\"resolved\\\":false,\\\"date\\\":\\\"<ISO>\\\"},{\\\"id\\\":\\\"40002\\\",\\\"userId\\\":\\\"U00000TEST\\\",\\\"resolved\\\":false,\\\"date\\\":\\\"<ISO>\\\"},{\\\"id\\\":\\\"40003\\\",\\\"userId\\\":\\\"U00000TEST\\\",\\\"resolved\\\":false,\\\"date\\\":\\\"<ISO>\\\"},{\\\"id\\\":\\\"40004\\\",\\\"userId\\\":\\\"U00000TEST\\\",\\\"resolved\\\":false,\\\"date\\\":\\\"<ISO>\\\"},{\\\"id\\\":\\\"40005\\\",\\\"userId\\\":\\\"U00000TEST\\\",\\\"resolved\\\":false,\\\"date\\\":\\\"<ISO>\\\"},{\\\"id\\\":\\\"40006\\\",\\\"userId\\\":\\\"U00000TEST\\\",\\\"resolved\\\":false,\\\"date\\\":\\\"<ISO>\\\"},{\\\"id\\\":\\\"40007\\\",\\\"userId\\\":\\\"U00000TEST\\\",\\\"resolved\\\":false,\\\"date\\\":\\\"<ISO>\\\"},{\\\"id\\\":\\\"40008\\\",\\\"userId\\\":\\\"U00000TEST\\\",\\\"resolved\\\":false,\\\"date\\\":\\\"<ISO>\\\"},{\\\"id\\\":\\\"40009\\\",\\\"userId\\\":\\\"U00000TEST\\\",\\\"resolved\\\":false,\\\"date\\\":\\\"<ISO>\\\"},{\\\"id\\\":\\\"40010\\\",\\\"userId\\\":\\\"U00000TEST\\\",\\\"resolved\\\":false,\\\"date\\\":\\\"<ISO>\\\"},{\\\"id\\\":\\\"40011\\\",\\\"userId\\\":\\\"U00000TEST\\\",\\\"resolved\\\":false,\\\"date\\\":\\\"<ISO>\\\"},{\\\"id\\\":\\\"40012\\\",\\\"userId\\\":\\\"U00000TEST\\\",\\\"resolved\\\":false,\\\"date\\\":\\\"<ISO>\\\"},{\\\"id\\\":\\\"40013\\\",\\\"userId\\\":\\\"U00000TEST\\\",\\\"resolved\\\":false,\\\"date\\\":\\\"<ISO>\\\"},{\\\"id\\\":\\\"40014\\\",\\\"userId\\\":\\\"U00000TEST\\\",\\\"resolved\\\":false,\\\"date\\\":\\\"<ISO>\\\"},{\\\"id\\\":\\\"40015\\\",\\\"userId\\\":\\\"U00000TEST\\\",\\\"resolved\\\":false,\\\"date\\\":\\\"<ISO>\\\"},{\\\"id\\\":\\\"40016\\\",\\\"userId\\\":\\\"U00000TEST\\\",\\\"resolved\\\":false,\\\"date\\\":\\\"<ISO>\\\"},{\\\"id\\\":\\\"40017\\\",\\\"userId\\\":\\\"U00000TEST\\\",\\\"resolved\\\":false,\\\"date\\\":\\\"<ISO>\\\"},{\\\"id\\\":\\\"40018\\\",\\\"userId\\\":\\\"U00000TEST\\\",\\\"resolved\\\":false,\\\"date\\\":\\\"<ISO>\\\"},{\\\"id\\\":\\\"40019\\\",\\\"userId\\\":\\\"U00000TEST\\\",\\\"resolved\\\":false,\\\"date\\\":\\\"<ISO>\\\"},{\\\"id\\\":\\\"40020\\\",\\\"userId\\\":\\\"U00000TEST\\\",\\\"resolved\\\":false,\\\"date\\\":\\\"<ISO>\\\"},{\\\"id\\\":\\\"40021\\\",\\\"userId\\\":\\\"U00000TEST\\\",\\\"resolved\\\":false,\\\"date\\\":\\\"<ISO>\\\"},{\\\"id\\\":\\\"40022\\\",\\\"userId\\\":\\\"U00000TEST\\\",\\\"resolved\\\":false,\\\"date\\\":\\\"<ISO>\\\"},{\\\"id\\\":\\\"40023\\\",\\\"userId\\\":\\\"U00000TEST\\\",\\\"resolved\\\":false,\\\"date\\\":\\\"<ISO>\\\"},{\\\"id\\\":\\\"40024\\\",\\\"userId\\\":\\\"U00000TEST\\\",\\\"resolved\\\":false,\\\"date\\\":\\\"<ISO>\\\"},{\\\"id\\\":\\\"1\\\",\\\"userId\\\":\\\"U00000TEST\\\",\\\"resolved\\\":true,\\\"date\\\":\\\"<ISO>\\\",\\\"status\\\":\\\"meta\\\"},{\\\"id\\\":\\\"2\\\",\\\"userId\\\":\\\"U_OTHER\\\",\\\"resolved\\\":false,\\\"date\\\":\\\"<ISO>\\\"}]\"}",
+        "{\"calls\":{\"conversations.history\":[{\"channel\":\"C08R8LE6DDG\",\"limit\":200}],\"views.publish\":[{\"user_id\":\"U00000TEST\",\"view\":{\"type\":\"home\",\"blocks\":[{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"*Mrox* :neocat_glasses:\\nPaste your confession ID below and press Enter, and I'll DM you when its status changes.\"}},{\"type\":\"input\",\"block_id\":\"track_input_<N>\",\"dispatch_action\":true,\"label\":{\"type\":\"plain_text\",\"text\":\"Track a confession\"},\"element\":{\"type\":\"plain_text_input\",\"action_id\":\"track_confession_input\",\"placeholder\":{\"type\":\"plain_text\",\"text\":\"Paste a confession ID, e.g. 40289\"},\"dispatch_action_config\":{\"trigger_actions_on\":[\"on_enter_pressed\"]}}},{\"type\":\"context\",\"elements\":[{\"type\":\"mrkdwn\",\"text\":\"Now tracking confession #40102. I'll DM you when its status changes. :neocat:\"}]},{\"type\":\"divider\"},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"*Being tracked*\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40000\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40000\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40001\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40001\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40002\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40002\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40003\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40003\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40004\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40004\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40005\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40005\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40006\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40006\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40007\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40007\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40008\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40008\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40009\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40009\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40010\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40010\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40011\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40011\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40012\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40012\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40013\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40013\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40014\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40014\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40015\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40015\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40016\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40016\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40017\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40017\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40018\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40018\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40019\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40019\"}},{\"type\":\"divider\"},{\"type\":\"context\",\"elements\":[{\"type\":\"mrkdwn\",\"text\":\"<https://hackclub.enterprise.slack.com/docs/T0266FRGM/F0C9ZFGE6U9|Privacy policy>\"}]}]}}]},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40000\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40001\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40002\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40003\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40004\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40005\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40006\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40007\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40008\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40009\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40010\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40011\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40012\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40013\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40014\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40015\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40016\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40017\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40018\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40019\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40020\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40021\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40022\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40023\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40024\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"1\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": true,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"status\\\": \\\"meta\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"2\\\",\\n    \\\"userId\\\": \\\"U_OTHER\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40102\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  }\\n]\"}",
+        "{\"calls\":{},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40000\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40001\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40002\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40003\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40004\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40005\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40006\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40007\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40008\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40009\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40010\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40011\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40012\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40013\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40014\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40015\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40016\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40017\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40018\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40019\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40020\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40021\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40022\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40023\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40024\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"1\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": true,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"status\\\": \\\"meta\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"2\\\",\\n    \\\"userId\\\": \\\"U_OTHER\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40102\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  }\\n]\"}",
+        "{\"calls\":{\"views.publish\":[{\"user_id\":\"U00000TEST\",\"view\":{\"type\":\"home\",\"blocks\":[{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"*Mrox* :neocat_glasses:\\nPaste your confession ID below and press Enter, and I'll DM you when its status changes.\"}},{\"type\":\"input\",\"block_id\":\"track_input_<N>\",\"dispatch_action\":true,\"label\":{\"type\":\"plain_text\",\"text\":\"Track a confession\"},\"element\":{\"type\":\"plain_text_input\",\"action_id\":\"track_confession_input\",\"placeholder\":{\"type\":\"plain_text\",\"text\":\"Paste a confession ID, e.g. 40289\"},\"dispatch_action_config\":{\"trigger_actions_on\":[\"on_enter_pressed\"]}}},{\"type\":\"context\",\"elements\":[{\"type\":\"mrkdwn\",\"text\":\"Confession #40109 isn't being tracked.\"}]},{\"type\":\"divider\"},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"*Being tracked*\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40000\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40000\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40001\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40001\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40002\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40002\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40003\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40003\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40004\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40004\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40005\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40005\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40006\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40006\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40007\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40007\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40008\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40008\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40009\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40009\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40010\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40010\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40011\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40011\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40012\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40012\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40013\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40013\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40014\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40014\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40015\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40015\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40016\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40016\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40017\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40017\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40018\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40018\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40019\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40019\"}},{\"type\":\"divider\"},{\"type\":\"context\",\"elements\":[{\"type\":\"mrkdwn\",\"text\":\"<https://hackclub.enterprise.slack.com/docs/T0266FRGM/F0C9ZFGE6U9|Privacy policy>\"}]}]}}]},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40000\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40001\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40002\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40003\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40004\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40005\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40006\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40007\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40008\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40009\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40010\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40011\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40012\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40013\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40014\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40015\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40016\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40017\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40018\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40019\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40020\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40021\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40022\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40023\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40024\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"1\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": true,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"status\\\": \\\"meta\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"2\\\",\\n    \\\"userId\\\": \\\"U_OTHER\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40102\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  }\\n]\"}",
+        "{\"calls\":{\"views.publish\":[{\"user_id\":\"U00000TEST\",\"view\":{\"type\":\"home\",\"blocks\":[{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"*Mrox* :neocat_glasses:\\nPaste your confession ID below and press Enter, and I'll DM you when its status changes.\"}},{\"type\":\"input\",\"block_id\":\"track_input_<N>\",\"dispatch_action\":true,\"label\":{\"type\":\"plain_text\",\"text\":\"Track a confession\"},\"element\":{\"type\":\"plain_text_input\",\"action_id\":\"track_confession_input\",\"placeholder\":{\"type\":\"plain_text\",\"text\":\"Paste a confession ID, e.g. 40289\"},\"dispatch_action_config\":{\"trigger_actions_on\":[\"on_enter_pressed\"]}}},{\"type\":\"context\",\"elements\":[{\"type\":\"mrkdwn\",\"text\":\"Stopped tracking 11 confession(s) below #40010.\"}]},{\"type\":\"divider\"},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"*Being tracked*\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40010\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40010\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40011\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40011\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40012\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40012\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40013\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40013\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40014\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40014\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40015\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40015\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40016\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40016\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40017\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40017\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40018\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40018\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40019\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40019\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40020\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40020\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40021\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40021\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40022\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40022\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40023\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40023\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40024\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40024\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40102\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40102\"}},{\"type\":\"divider\"},{\"type\":\"context\",\"elements\":[{\"type\":\"mrkdwn\",\"text\":\"<https://hackclub.enterprise.slack.com/docs/T0266FRGM/F0C9ZFGE6U9|Privacy policy>\"}]}]}}]},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40010\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40011\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40012\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40013\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40014\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40015\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40016\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40017\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40018\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40019\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40020\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40021\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40022\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40023\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40024\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"2\\\",\\n    \\\"userId\\\": \\\"U_OTHER\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40102\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  }\\n]\"}",
+        "{\"calls\":{\"views.publish\":[{\"user_id\":\"U00000TEST\",\"view\":{\"type\":\"home\",\"blocks\":[{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"*Mrox* :neocat_glasses:\\nPaste your confession ID below and press Enter, and I'll DM you when its status changes.\"}},{\"type\":\"input\",\"block_id\":\"track_input_<N>\",\"dispatch_action\":true,\"label\":{\"type\":\"plain_text\",\"text\":\"Track a confession\"},\"element\":{\"type\":\"plain_text_input\",\"action_id\":\"track_confession_input\",\"placeholder\":{\"type\":\"plain_text\",\"text\":\"Paste a confession ID, e.g. 40289\"},\"dispatch_action_config\":{\"trigger_actions_on\":[\"on_enter_pressed\"]}}},{\"type\":\"divider\"},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"*Being tracked*\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40010\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40010\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40011\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40011\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40012\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40012\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40013\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40013\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40014\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40014\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40015\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40015\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40016\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40016\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40017\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40017\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40018\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40018\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40019\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40019\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40020\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40020\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40021\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40021\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40022\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40022\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40023\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40023\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40024\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40024\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"#40102\"},\"accessory\":{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"Untrack\"},\"action_id\":\"untrack_confession\",\"value\":\"40102\"}},{\"type\":\"divider\"},{\"type\":\"context\",\"elements\":[{\"type\":\"mrkdwn\",\"text\":\"<https://hackclub.enterprise.slack.com/docs/T0266FRGM/F0C9ZFGE6U9|Privacy policy>\"}]}]}}]},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40010\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40011\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40012\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40013\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40014\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40015\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40016\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40017\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40018\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40019\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40020\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40021\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40022\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40023\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40024\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"2\\\",\\n    \\\"userId\\\": \\\"U_OTHER\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40102\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  }\\n]\"}"
+      ]
+    },
+    {
+      "name": "restricted user: every entry point refuses",
+      "restrict": true,
+      "verify": false,
+      "userToken": false,
+      "data": "[]",
+      "replies": {},
+      "steps": [
+        {
+          "kind": "command",
+          "payload": {
+            "command": "/mrox",
+            "text": "1",
+            "user_id": "U_X",
+            "response_url": "https://hooks.example/resp"
+          }
+        },
+        {
+          "kind": "track",
+          "body": {
+            "user": {
+              "id": "U_X"
+            }
+          },
+          "action": {
+            "action_id": "track_confession_input",
+            "value": "1"
+          }
+        },
+        {
+          "kind": "untrack",
+          "body": {
+            "user": {
+              "id": "U_X"
+            }
+          },
+          "action": {
+            "action_id": "untrack_confession",
+            "value": "1"
+          }
+        },
+        {
+          "kind": "home",
+          "event": {
+            "type": "app_home_opened",
+            "user": "U_X"
+          }
+        }
+      ],
+      "expected": [
+        "{\"calls\":{},\"responded\":[[\"https://hooks.example/resp\",{\"text\":\"sorgy u cant do this, dm <@USER> if this shouldnt have happened\"}]],\"data\":\"[]\"}",
+        "{\"calls\":{\"views.publish\":[{\"user_id\":\"U_X\",\"view\":{\"type\":\"home\",\"blocks\":[{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"*Mrox* :neocat_glasses:\\nPaste your confession ID below and press Enter, and I'll DM you when its status changes.\"}},{\"type\":\"input\",\"block_id\":\"track_input_<N>\",\"dispatch_action\":true,\"label\":{\"type\":\"plain_text\",\"text\":\"Track a confession\"},\"element\":{\"type\":\"plain_text_input\",\"action_id\":\"track_confession_input\",\"placeholder\":{\"type\":\"plain_text\",\"text\":\"Paste a confession ID, e.g. 40289\"},\"dispatch_action_config\":{\"trigger_actions_on\":[\"on_enter_pressed\"]}}},{\"type\":\"context\",\"elements\":[{\"type\":\"mrkdwn\",\"text\":\"sorgy u cant do this, dm <@USER> if this shouldnt have happened\"}]},{\"type\":\"divider\"},{\"type\":\"context\",\"elements\":[{\"type\":\"mrkdwn\",\"text\":\"<https://hackclub.enterprise.slack.com/docs/T0266FRGM/F0C9ZFGE6U9|Privacy policy>\"}]}]}}]},\"responded\":[],\"data\":\"[]\"}",
+        "{\"calls\":{\"views.publish\":[{\"user_id\":\"U_X\",\"view\":{\"type\":\"home\",\"blocks\":[{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"*Mrox* :neocat_glasses:\\nPaste your confession ID below and press Enter, and I'll DM you when its status changes.\"}},{\"type\":\"input\",\"block_id\":\"track_input_<N>\",\"dispatch_action\":true,\"label\":{\"type\":\"plain_text\",\"text\":\"Track a confession\"},\"element\":{\"type\":\"plain_text_input\",\"action_id\":\"track_confession_input\",\"placeholder\":{\"type\":\"plain_text\",\"text\":\"Paste a confession ID, e.g. 40289\"},\"dispatch_action_config\":{\"trigger_actions_on\":[\"on_enter_pressed\"]}}},{\"type\":\"context\",\"elements\":[{\"type\":\"mrkdwn\",\"text\":\"sorgy u cant do this, dm <@USER> if this shouldnt have happened\"}]},{\"type\":\"divider\"},{\"type\":\"context\",\"elements\":[{\"type\":\"mrkdwn\",\"text\":\"<https://hackclub.enterprise.slack.com/docs/T0266FRGM/F0C9ZFGE6U9|Privacy policy>\"}]}]}}]},\"responded\":[],\"data\":\"[]\"}",
+        "{\"calls\":{\"views.publish\":[{\"user_id\":\"U_X\",\"view\":{\"type\":\"home\",\"blocks\":[{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"*Mrox* :neocat_glasses:\\nPaste your confession ID below and press Enter, and I'll DM you when its status changes.\"}},{\"type\":\"input\",\"block_id\":\"track_input_<N>\",\"dispatch_action\":true,\"label\":{\"type\":\"plain_text\",\"text\":\"Track a confession\"},\"element\":{\"type\":\"plain_text_input\",\"action_id\":\"track_confession_input\",\"placeholder\":{\"type\":\"plain_text\",\"text\":\"Paste a confession ID, e.g. 40289\"},\"dispatch_action_config\":{\"trigger_actions_on\":[\"on_enter_pressed\"]}}},{\"type\":\"divider\"},{\"type\":\"context\",\"elements\":[{\"type\":\"mrkdwn\",\"text\":\"<https://hackclub.enterprise.slack.com/docs/T0266FRGM/F0C9ZFGE6U9|Privacy policy>\"}]}]}}]},\"responded\":[],\"data\":\"[]\"}"
+      ]
+    },
+    {
+      "name": "help text and untrack commands",
+      "restrict": true,
+      "verify": false,
+      "userToken": false,
+      "data": "[{\"id\":\"40102\",\"userId\":\"U00000TEST\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.605Z\"},{\"id\":\"40110\",\"userId\":\"U00000TEST\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.605Z\"}]",
+      "replies": {},
+      "steps": [
+        {
+          "kind": "command",
+          "payload": {
+            "command": "/mrox",
+            "text": "",
+            "user_id": "U00000TEST",
+            "response_url": "https://hooks.example/resp"
+          }
+        },
+        {
+          "kind": "command",
+          "payload": {
+            "command": "/mrox",
+            "text": "abc",
+            "user_id": "U00000TEST",
+            "response_url": "https://hooks.example/resp"
+          }
+        },
+        {
+          "kind": "command",
+          "payload": {
+            "command": "/mrox",
+            "text": "untrack",
+            "user_id": "U00000TEST",
+            "response_url": "https://hooks.example/resp"
+          }
+        },
+        {
+          "kind": "command",
+          "payload": {
+            "command": "/mrox",
+            "text": "untrack 40102",
+            "user_id": "U00000TEST",
+            "response_url": "https://hooks.example/resp"
+          }
+        },
+        {
+          "kind": "command",
+          "payload": {
+            "command": "/mrox",
+            "text": "untrack 40102",
+            "user_id": "U00000TEST",
+            "response_url": "https://hooks.example/resp"
+          }
+        },
+        {
+          "kind": "command",
+          "payload": {
+            "command": "/mrox",
+            "text": "untrack below 50000",
+            "user_id": "U00000TEST",
+            "response_url": "https://hooks.example/resp"
+          }
+        },
+        {
+          "kind": "command",
+          "payload": {
+            "command": "/mrox",
+            "text": "UNTRACK #3",
+            "user_id": "U00000TEST",
+            "response_url": "https://hooks.example/resp"
+          }
+        }
+      ],
+      "expected": [
+        "{\"calls\":{},\"responded\":[[\"https://hooks.example/resp\",{\"text\":\"to track a confession use `/mrox {id}` (or paste the id into the box on my app home) and ill dm u when its approved, use `/mrox untrack {id}` to untrack somthing\"}]],\"data\":\"[{\\\"id\\\":\\\"40102\\\",\\\"userId\\\":\\\"U00000TEST\\\",\\\"resolved\\\":false,\\\"date\\\":\\\"<ISO>\\\"},{\\\"id\\\":\\\"40110\\\",\\\"userId\\\":\\\"U00000TEST\\\",\\\"resolved\\\":false,\\\"date\\\":\\\"<ISO>\\\"}]\"}",
+        "{\"calls\":{},\"responded\":[[\"https://hooks.example/resp\",{\"text\":\"to track a confession use `/mrox {id}` (or paste the id into the box on my app home) and ill dm u when its approved, use `/mrox untrack {id}` to untrack somthing\"}]],\"data\":\"[{\\\"id\\\":\\\"40102\\\",\\\"userId\\\":\\\"U00000TEST\\\",\\\"resolved\\\":false,\\\"date\\\":\\\"<ISO>\\\"},{\\\"id\\\":\\\"40110\\\",\\\"userId\\\":\\\"U00000TEST\\\",\\\"resolved\\\":false,\\\"date\\\":\\\"<ISO>\\\"}]\"}",
+        "{\"calls\":{},\"responded\":[[\"https://hooks.example/resp\",{\"text\":\"to track a confession use `/mrox {id}` (or paste the id into the box on my app home) and ill dm u when its approved, use `/mrox untrack {id}` to untrack somthing\"}]],\"data\":\"[{\\\"id\\\":\\\"40102\\\",\\\"userId\\\":\\\"U00000TEST\\\",\\\"resolved\\\":false,\\\"date\\\":\\\"<ISO>\\\"},{\\\"id\\\":\\\"40110\\\",\\\"userId\\\":\\\"U00000TEST\\\",\\\"resolved\\\":false,\\\"date\\\":\\\"<ISO>\\\"}]\"}",
+        "{\"calls\":{},\"responded\":[[\"https://hooks.example/resp\",{\"text\":\"Stopped tracking confession #40102.\"}]],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40110\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  }\\n]\"}",
+        "{\"calls\":{},\"responded\":[[\"https://hooks.example/resp\",{\"text\":\"Confession #40102 isn't being tracked.\"}]],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40110\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  }\\n]\"}",
+        "{\"calls\":{},\"responded\":[[\"https://hooks.example/resp\",{\"text\":\"Stopped tracking 1 confession(s) below #50000.\"}]],\"data\":\"[]\"}",
+        "{\"calls\":{},\"responded\":[[\"https://hooks.example/resp\",{\"text\":\"Confession #3 isn't being tracked.\"}]],\"data\":\"[]\"}"
+      ]
+    },
+    {
+      "name": "five history pages per channel, then no link",
+      "restrict": true,
+      "verify": false,
+      "userToken": false,
+      "data": "[{\"id\":\"40111\",\"userId\":\"U1\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.606Z\"}]",
+      "replies": {
+        "conversations.history": [
+          {
+            "ok": true,
+            "messages": [],
+            "response_metadata": {
+              "next_cursor": "more"
+            }
+          },
+          {
+            "ok": true,
+            "messages": [],
+            "response_metadata": {
+              "next_cursor": "more"
+            }
+          },
+          {
+            "ok": true,
+            "messages": [],
+            "response_metadata": {
+              "next_cursor": "more"
+            }
+          },
+          {
+            "ok": true,
+            "messages": [],
+            "response_metadata": {
+              "next_cursor": "more"
+            }
+          },
+          {
+            "ok": true,
+            "messages": [],
+            "response_metadata": {
+              "next_cursor": "more"
+            }
+          },
+          {
+            "ok": true,
+            "messages": [],
+            "response_metadata": {
+              "next_cursor": "more"
+            }
+          },
+          {
+            "ok": true,
+            "messages": [],
+            "response_metadata": {
+              "next_cursor": "more"
+            }
+          },
+          {
+            "ok": true,
+            "messages": [],
+            "response_metadata": {
+              "next_cursor": "more"
+            }
+          },
+          {
+            "ok": true,
+            "messages": [],
+            "response_metadata": {
+              "next_cursor": "more"
+            }
+          },
+          {
+            "ok": true,
+            "messages": [],
+            "response_metadata": {
+              "next_cursor": "more"
+            }
+          },
+          {
+            "ok": true,
+            "messages": [],
+            "response_metadata": {
+              "next_cursor": "more"
+            }
+          },
+          {
+            "ok": true,
+            "messages": [],
+            "response_metadata": {
+              "next_cursor": "more"
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "kind": "message",
+          "event": {
+            "type": "message",
+            "ts": "1700000500.000200",
+            "channel": "C08R8LE6DDG",
+            "bot_id": "B0C6JPG4W0G",
+            "text": "40111 approved to <#CNMU9L92Q>"
+          }
+        }
+      ],
+      "expected": [
+        "{\"calls\":{\"chat.postMessage\":[{\"channel\":\"U1\",\"text\":\":yay: Your confession #40111 got approved for <#CNMU9L92Q>!\"}],\"conversations.history\":[{\"channel\":\"CNMU9L92Q\",\"limit\":200},{\"channel\":\"CNMU9L92Q\",\"limit\":200,\"cursor\":\"more\"},{\"channel\":\"CNMU9L92Q\",\"limit\":200,\"cursor\":\"more\"},{\"channel\":\"CNMU9L92Q\",\"limit\":200,\"cursor\":\"more\"},{\"channel\":\"CNMU9L92Q\",\"limit\":200,\"cursor\":\"more\"},{\"channel\":\"C0188CY57PZ\",\"limit\":200},{\"channel\":\"C0188CY57PZ\",\"limit\":200,\"cursor\":\"more\"},{\"channel\":\"C0188CY57PZ\",\"limit\":200,\"cursor\":\"more\"},{\"channel\":\"C0188CY57PZ\",\"limit\":200,\"cursor\":\"more\"},{\"channel\":\"C0188CY57PZ\",\"limit\":200,\"cursor\":\"more\"}]},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40111\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": true,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"status\\\": \\\"approved\\\"\\n  }\\n]\"}"
+      ]
+    },
+    {
+      "name": "a failing history channel is skipped",
+      "restrict": true,
+      "verify": false,
+      "userToken": false,
+      "data": "[{\"id\":\"40112\",\"userId\":\"U1\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.606Z\"}]",
+      "replies": {
+        "conversations.history": [
+          {
+            "__error": "channel_not_found"
+          },
+          {
+            "ok": true,
+            "messages": [
+              {
+                "text": "40112: meta",
+                "ts": "1.2"
+              }
+            ],
+            "response_metadata": {
+              "next_cursor": ""
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "kind": "message",
+          "event": {
+            "type": "message",
+            "ts": "1700000500.000200",
+            "channel": "C08R8LE6DDG",
+            "bot_id": "B0C6JPG4W0G",
+            "text": "40112 approved to <#CNMU9L92Q>"
+          }
+        }
+      ],
+      "expected": [
+        "{\"calls\":{\"chat.postMessage\":[{\"channel\":\"U1\",\"text\":\":yay: Your confession #40112 got approved for <#CNMU9L92Q>! <https://hackclub.enterprise.slack.com/archives/CNMU9L92Q/p12|View it here>\"}],\"conversations.history\":[{\"channel\":\"CNMU9L92Q\",\"limit\":200},{\"channel\":\"C0188CY57PZ\",\"limit\":200}]},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40112\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": true,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"postTs\\\": \\\"1.2\\\",\\n    \\\"status\\\": \\\"approved\\\"\\n  }\\n]\"}"
+      ]
+    },
+    {
+      "name": "VERIFY_ID_IN_STATUS requires the #id",
+      "restrict": true,
+      "verify": true,
+      "userToken": false,
+      "data": "[{\"id\":\"40113\",\"userId\":\"U1\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.606Z\"}]",
+      "replies": {},
+      "steps": [
+        {
+          "kind": "message",
+          "event": {
+            "type": "message",
+            "ts": "1700000500.000200",
+            "channel": "C08R8LE6DDG",
+            "bot_id": "B0C6JPG4W0G",
+            "text": "40113 unapproved"
+          }
+        },
+        {
+          "kind": "message",
+          "event": {
+            "type": "message",
+            "ts": "1700000500.000200",
+            "channel": "C08R8LE6DDG",
+            "bot_id": "B0C6JPG4W0G",
+            "text": "#40113 unapproved"
+          }
+        }
+      ],
+      "expected": [
+        "{\"calls\":{},\"responded\":[],\"data\":\"[{\\\"id\\\":\\\"40113\\\",\\\"userId\\\":\\\"U1\\\",\\\"resolved\\\":false,\\\"date\\\":\\\"<ISO>\\\"}]\"}",
+        "{\"calls\":{\"chat.postMessage\":[{\"channel\":\"U1\",\"text\":\":uuh: Your confession #40113 was unapproved and the thread has been nuked.\"}]},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40113\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": true,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"status\\\": \\\"unapproved\\\"\\n  }\\n]\"}"
+      ]
+    },
+    {
+      "name": "cached postTs is used without a search",
+      "restrict": true,
+      "verify": false,
+      "userToken": false,
+      "data": "[{\"id\":\"40114\",\"userId\":\"U1\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.606Z\",\"postTs\":\"1700.25\"}]",
+      "replies": {},
+      "steps": [
+        {
+          "kind": "message",
+          "event": {
+            "type": "message",
+            "ts": "1700000500.000200",
+            "channel": "C08R8LE6DDG",
+            "bot_id": "B0C6JPG4W0G",
+            "text": "40114 approved to <#CNMU9L92Q>"
+          }
+        }
+      ],
+      "expected": [
+        "{\"calls\":{\"chat.postMessage\":[{\"channel\":\"U1\",\"text\":\":yay: Your confession #40114 got approved for <#CNMU9L92Q>! <https://hackclub.enterprise.slack.com/archives/CNMU9L92Q/p170025|View it here>\"}]},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40114\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": true,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"postTs\\\": \\\"1700.25\\\",\\n    \\\"status\\\": \\\"approved\\\"\\n  }\\n]\"}"
+      ]
+    },
+    {
+      "name": "a failed DM is logged and the status is still saved",
+      "restrict": true,
+      "verify": false,
+      "userToken": false,
+      "data": "[{\"id\":\"40115\",\"userId\":\"U1\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.606Z\"}]",
+      "replies": {
+        "chat.postMessage": [
+          {
+            "__error": "user_not_found"
+          }
+        ]
+      },
+      "steps": [
+        {
+          "kind": "message",
+          "event": {
+            "type": "message",
+            "ts": "1700000500.000200",
+            "channel": "C08R8LE6DDG",
+            "bot_id": "B0C6JPG4W0G",
+            "text": "40115 unapproved"
+          }
+        }
+      ],
+      "expected": [
+        "{\"calls\":{\"chat.postMessage\":[{\"channel\":\"U1\",\"text\":\":uuh: Your confession #40115 was unapproved and the thread has been nuked.\"}]},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40115\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": true,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"status\\\": \\\"unapproved\\\"\\n  }\\n]\"}"
+      ]
+    },
+    {
+      "name": "message_changed reads the inner message",
+      "restrict": true,
+      "verify": false,
+      "userToken": false,
+      "data": "[{\"id\":\"40116\",\"userId\":\"U1\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.606Z\"}]",
+      "replies": {},
+      "steps": [
+        {
+          "kind": "message",
+          "event": {
+            "type": "message",
+            "ts": "1700.9",
+            "subtype": "message_changed",
+            "channel": "C08R8LE6DDG",
+            "message": {
+              "text": "40116 unapproved",
+              "bot_id": "B0C6JPG4W0G",
+              "ts": "1700.1"
+            }
+          }
+        }
+      ],
+      "expected": [
+        "{\"calls\":{\"chat.postMessage\":[{\"channel\":\"U1\",\"text\":\":uuh: Your confession #40116 was unapproved and the thread has been nuked.\"}]},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40116\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": true,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"status\\\": \\\"unapproved\\\"\\n  }\\n]\"}"
+      ]
+    },
+    {
+      "name": "corrupt data file reads as empty and is rewritten",
+      "restrict": true,
+      "verify": false,
+      "userToken": false,
+      "data": "{not json",
+      "replies": {},
+      "steps": [
+        {
+          "kind": "command",
+          "payload": {
+            "command": "/mrox",
+            "text": "40102",
+            "user_id": "U00000TEST",
+            "response_url": "https://hooks.example/resp"
+          }
+        },
+        {
+          "kind": "message",
+          "event": {
+            "type": "message",
+            "ts": "1700000500.000200",
+            "channel": "C08R8LE6DDG",
+            "bot_id": "B0C6JPG4W0G",
+            "text": "40102 unapproved"
+          }
+        }
+      ],
+      "expected": [
+        "{\"calls\":{\"conversations.history\":[{\"channel\":\"C08R8LE6DDG\",\"limit\":200}]},\"responded\":[[\"https://hooks.example/resp\",{\"text\":\"Now tracking confession #40102. I'll DM you when its status changes. :neocat:\"}]],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40102\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  }\\n]\"}",
+        "{\"calls\":{\"chat.postMessage\":[{\"channel\":\"U00000TEST\",\"text\":\":uuh: Your confession #40102 was unapproved and the thread has been nuked.\"}]},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40102\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": true,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"status\\\": \\\"unapproved\\\"\\n  }\\n]\"}"
+      ]
+    },
+    {
+      "name": "data file that is not a list makes every handler fail quietly",
+      "restrict": true,
+      "verify": false,
+      "userToken": false,
+      "data": "{}",
+      "replies": {},
+      "steps": [
+        {
+          "kind": "command",
+          "payload": {
+            "command": "/mrox",
+            "text": "40102",
+            "user_id": "U00000TEST",
+            "response_url": "https://hooks.example/resp"
+          }
+        },
+        {
+          "kind": "home",
+          "event": {
+            "type": "app_home_opened",
+            "user": "U00000TEST"
+          }
+        },
+        {
+          "kind": "track",
+          "body": {
+            "user": {
+              "id": "U00000TEST"
+            }
+          },
+          "action": {
+            "action_id": "track_confession_input",
+            "value": "40102"
+          }
+        },
+        {
+          "kind": "message",
+          "event": {
+            "type": "message",
+            "ts": "1700000500.000200",
+            "channel": "C08R8LE6DDG",
+            "bot_id": "B0C6JPG4W0G",
+            "text": "40102 unapproved"
+          }
+        },
+        {
+          "kind": "cleanup"
+        },
+        {
+          "kind": "resume"
+        },
+        {
+          "kind": "advance",
+          "ms": 90000
+        }
+      ],
+      "expected": [
+        "{\"calls\":{},\"responded\":[],\"data\":\"{}\"}",
+        "{\"calls\":{},\"responded\":[],\"data\":\"{}\"}",
+        "{\"calls\":{},\"responded\":[],\"data\":\"{}\"}",
+        "{\"calls\":{},\"responded\":[],\"data\":\"{}\"}",
+        "{\"calls\":{},\"responded\":[],\"data\":\"{}\"}",
+        "{\"calls\":{},\"responded\":[],\"data\":\"{}\"}",
+        "{\"calls\":{},\"responded\":[],\"data\":\"{}\"}"
+      ]
+    },
+    {
+      "name": "cleanup removes only expired resolved entries",
+      "restrict": true,
+      "verify": false,
+      "userToken": false,
+      "data": "[{\"id\":\"1\",\"userId\":\"U\",\"resolved\":true,\"date\":\"2020-01-01T00:00:00.000Z\"},{\"id\":\"2\",\"userId\":\"U\",\"resolved\":true,\"date\":\"2026-11-22T02:16:43.606Z\"},{\"id\":\"3\",\"userId\":\"U\",\"resolved\":false,\"date\":\"2020-01-01T00:00:00.000Z\"}]",
+      "replies": {},
+      "steps": [
+        {
+          "kind": "cleanup"
+        }
+      ],
+      "expected": [
+        "{\"calls\":{},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"2\\\",\\n    \\\"userId\\\": \\\"U\\\",\\n    \\\"resolved\\\": true,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"3\\\",\\n    \\\"userId\\\": \\\"U\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  }\\n]\"}"
+      ]
+    },
+    {
+      "name": "a failed home publish is logged",
+      "restrict": true,
+      "verify": false,
+      "userToken": false,
+      "data": "[]",
+      "replies": {
+        "views.publish": [
+          {
+            "__error": "invalid_arguments"
+          }
+        ]
+      },
+      "steps": [
+        {
+          "kind": "home",
+          "event": {
+            "type": "app_home_opened",
+            "user": "U00000TEST"
+          }
+        },
+        {
+          "kind": "home",
+          "event": {
+            "type": "app_home_opened",
+            "user": "U00000TEST"
+          }
+        }
+      ],
+      "expected": [
+        "{\"calls\":{\"views.publish\":[{\"user_id\":\"U00000TEST\",\"view\":{\"type\":\"home\",\"blocks\":[{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"*Mrox* :neocat_glasses:\\nPaste your confession ID below and press Enter, and I'll DM you when its status changes.\"}},{\"type\":\"input\",\"block_id\":\"track_input_<N>\",\"dispatch_action\":true,\"label\":{\"type\":\"plain_text\",\"text\":\"Track a confession\"},\"element\":{\"type\":\"plain_text_input\",\"action_id\":\"track_confession_input\",\"placeholder\":{\"type\":\"plain_text\",\"text\":\"Paste a confession ID, e.g. 40289\"},\"dispatch_action_config\":{\"trigger_actions_on\":[\"on_enter_pressed\"]}}},{\"type\":\"divider\"},{\"type\":\"context\",\"elements\":[{\"type\":\"mrkdwn\",\"text\":\"<https://hackclub.enterprise.slack.com/docs/T0266FRGM/F0C9ZFGE6U9|Privacy policy>\"}]}]}}]},\"responded\":[],\"data\":\"[]\"}",
+        "{\"calls\":{\"views.publish\":[{\"user_id\":\"U00000TEST\",\"view\":{\"type\":\"home\",\"blocks\":[{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"*Mrox* :neocat_glasses:\\nPaste your confession ID below and press Enter, and I'll DM you when its status changes.\"}},{\"type\":\"input\",\"block_id\":\"track_input_<N>\",\"dispatch_action\":true,\"label\":{\"type\":\"plain_text\",\"text\":\"Track a confession\"},\"element\":{\"type\":\"plain_text_input\",\"action_id\":\"track_confession_input\",\"placeholder\":{\"type\":\"plain_text\",\"text\":\"Paste a confession ID, e.g. 40289\"},\"dispatch_action_config\":{\"trigger_actions_on\":[\"on_enter_pressed\"]}}},{\"type\":\"divider\"},{\"type\":\"context\",\"elements\":[{\"type\":\"mrkdwn\",\"text\":\"<https://hackclub.enterprise.slack.com/docs/T0266FRGM/F0C9ZFGE6U9|Privacy policy>\"}]}]}}]},\"responded\":[],\"data\":\"[]\"}"
+      ]
+    },
+    {
+      "name": "another user cannot see or untrack my entry",
+      "restrict": false,
+      "verify": false,
+      "userToken": false,
+      "data": "[{\"id\":\"8\",\"userId\":\"U1\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.606Z\"}]",
+      "replies": {},
+      "steps": [
+        {
+          "kind": "command",
+          "payload": {
+            "command": "/mrox",
+            "text": "8",
+            "user_id": "U2",
+            "response_url": "https://hooks.example/resp"
+          }
+        },
+        {
+          "kind": "untrack",
+          "body": {
+            "user": {
+              "id": "U2"
+            }
+          },
+          "action": {
+            "action_id": "untrack_confession",
+            "value": "8"
+          }
+        },
+        {
+          "kind": "command",
+          "payload": {
+            "command": "/mrox",
+            "text": "untrack 8",
+            "user_id": "U1",
+            "response_url": "https://hooks.example/resp"
+          }
+        },
+        {
+          "kind": "command",
+          "payload": {
+            "command": "/mrox",
+            "text": "8",
+            "user_id": "U1",
+            "response_url": "https://hooks.example/resp"
+          }
+        }
+      ],
+      "expected": [
+        "{\"calls\":{},\"responded\":[[\"https://hooks.example/resp\",{\"text\":\"Confession #8 is already being tracked by someone else.\"}]],\"data\":\"[{\\\"id\\\":\\\"8\\\",\\\"userId\\\":\\\"U1\\\",\\\"resolved\\\":false,\\\"date\\\":\\\"<ISO>\\\"}]\"}",
+        "{\"calls\":{\"views.publish\":[{\"user_id\":\"U2\",\"view\":{\"type\":\"home\",\"blocks\":[{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"*Mrox* :neocat_glasses:\\nPaste your confession ID below and press Enter, and I'll DM you when its status changes.\"}},{\"type\":\"input\",\"block_id\":\"track_input_<N>\",\"dispatch_action\":true,\"label\":{\"type\":\"plain_text\",\"text\":\"Track a confession\"},\"element\":{\"type\":\"plain_text_input\",\"action_id\":\"track_confession_input\",\"placeholder\":{\"type\":\"plain_text\",\"text\":\"Paste a confession ID, e.g. 40289\"},\"dispatch_action_config\":{\"trigger_actions_on\":[\"on_enter_pressed\"]}}},{\"type\":\"context\",\"elements\":[{\"type\":\"mrkdwn\",\"text\":\"Confession #8 isn't being tracked.\"}]},{\"type\":\"divider\"},{\"type\":\"context\",\"elements\":[{\"type\":\"mrkdwn\",\"text\":\"<https://hackclub.enterprise.slack.com/docs/T0266FRGM/F0C9ZFGE6U9|Privacy policy>\"}]}]}}]},\"responded\":[],\"data\":\"[{\\\"id\\\":\\\"8\\\",\\\"userId\\\":\\\"U1\\\",\\\"resolved\\\":false,\\\"date\\\":\\\"<ISO>\\\"}]\"}",
+        "{\"calls\":{},\"responded\":[[\"https://hooks.example/resp\",{\"text\":\"Stopped tracking confession #8.\"}]],\"data\":\"[]\"}",
+        "{\"calls\":{\"conversations.history\":[{\"channel\":\"C08R8LE6DDG\",\"limit\":200}]},\"responded\":[[\"https://hooks.example/resp\",{\"text\":\"Now tracking confession #8. I'll DM you when its status changes. :neocat:\"}]],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"8\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  }\\n]\"}"
+      ]
+    },
+    {
+      "name": "reviewer replies push the DM back by the quiet period",
+      "restrict": true,
+      "verify": false,
+      "userToken": false,
+      "data": "[{\"id\":\"40117\",\"userId\":\"U1\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.606Z\"}]",
+      "replies": {
+        "conversations.replies": [
+          {
+            "ok": true,
+            "messages": [
+              {
+                "text": "40117 denied",
+                "ts": "1700000500.000200"
+              },
+              {
+                "text": "too spicy",
+                "user": "U_REV"
+              },
+              {
+                "text": "and cringe",
+                "user": "U_REV"
+              },
+              {
+                "text": "lol",
+                "user": "U_OTHER"
+              }
+            ],
+            "response_metadata": {
+              "next_cursor": ""
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "kind": "message",
+          "event": {
+            "type": "message",
+            "ts": "1700000500.000200",
+            "channel": "C08R8LE6DDG",
+            "bot_id": "B0C6JPG4W0G",
+            "text": "40117 denied"
+          }
+        },
+        {
+          "kind": "advance",
+          "ms": 89000
+        },
+        {
+          "kind": "message",
+          "event": {
+            "type": "message",
+            "ts": "1700000520.000100",
+            "channel": "C08R8LE6DDG",
+            "user": "U_REV",
+            "thread_ts": "1700000500.000200",
+            "text": "too spicy"
+          }
+        },
+        {
+          "kind": "advance",
+          "ms": 89999
+        },
+        {
+          "kind": "advance",
+          "ms": 1
+        }
+      ],
+      "expected": [
+        "{\"calls\":{},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40117\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"pendingReject\\\": {\\n      \\\"statusTs\\\": \\\"1700000500.000200\\\",\\n      \\\"at\\\": \\\"<ISO>\\\"\\n    }\\n  }\\n]\"}",
+        "{\"calls\":{},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40117\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"pendingReject\\\": {\\n      \\\"statusTs\\\": \\\"1700000500.000200\\\",\\n      \\\"at\\\": \\\"<ISO>\\\"\\n    }\\n  }\\n]\"}",
+        "{\"calls\":{},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40117\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"pendingReject\\\": {\\n      \\\"statusTs\\\": \\\"1700000500.000200\\\",\\n      \\\"at\\\": \\\"<ISO>\\\"\\n    }\\n  }\\n]\"}",
+        "{\"calls\":{},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40117\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"pendingReject\\\": {\\n      \\\"statusTs\\\": \\\"1700000500.000200\\\",\\n      \\\"at\\\": \\\"<ISO>\\\"\\n    }\\n  }\\n]\"}",
+        "{\"calls\":{\"chat.postMessage\":[{\"channel\":\"U1\",\"text\":\":neocat_sad: Your confession #40117 was denied. Reason (will be blank if none was provided): \\n> too spicy\\n> and cringe <https://hackclub.enterprise.slack.com/archives/C08R8LE6DDG/p1700000500000200|View the thread>\"}],\"conversations.replies\":[{\"channel\":\"C08R8LE6DDG\",\"ts\":\"1700000500.000200\"}]},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40117\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": true,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"status\\\": \\\"rejected\\\"\\n  }\\n]\"}"
+      ]
+    },
+    {
+      "name": "repeated replies cannot hold a rejection past ten minutes",
+      "restrict": true,
+      "verify": false,
+      "userToken": false,
+      "data": "[{\"id\":\"40118\",\"userId\":\"U1\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.606Z\"}]",
+      "replies": {
+        "conversations.replies": [
+          {
+            "ok": true,
+            "messages": [
+              {
+                "text": "40118 denied"
+              },
+              {
+                "text": "still",
+                "user": "U_REV"
+              }
+            ],
+            "response_metadata": {
+              "next_cursor": ""
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "kind": "message",
+          "event": {
+            "type": "message",
+            "ts": "1700000500.000200",
+            "channel": "C08R8LE6DDG",
+            "bot_id": "B0C6JPG4W0G",
+            "text": "40118 denied"
+          }
+        },
+        {
+          "kind": "advance",
+          "ms": 80000
+        },
+        {
+          "kind": "message",
+          "event": {
+            "type": "message",
+            "ts": "1700000600.000100",
+            "channel": "C08R8LE6DDG",
+            "user": "U_REV",
+            "thread_ts": "1700000500.000200",
+            "text": "still"
+          }
+        },
+        {
+          "kind": "advance",
+          "ms": 80000
+        },
+        {
+          "kind": "message",
+          "event": {
+            "type": "message",
+            "ts": "1700000600.000100",
+            "channel": "C08R8LE6DDG",
+            "user": "U_REV",
+            "thread_ts": "1700000500.000200",
+            "text": "still"
+          }
+        },
+        {
+          "kind": "advance",
+          "ms": 80000
+        },
+        {
+          "kind": "message",
+          "event": {
+            "type": "message",
+            "ts": "1700000600.000100",
+            "channel": "C08R8LE6DDG",
+            "user": "U_REV",
+            "thread_ts": "1700000500.000200",
+            "text": "still"
+          }
+        },
+        {
+          "kind": "advance",
+          "ms": 80000
+        },
+        {
+          "kind": "message",
+          "event": {
+            "type": "message",
+            "ts": "1700000600.000100",
+            "channel": "C08R8LE6DDG",
+            "user": "U_REV",
+            "thread_ts": "1700000500.000200",
+            "text": "still"
+          }
+        },
+        {
+          "kind": "advance",
+          "ms": 80000
+        },
+        {
+          "kind": "message",
+          "event": {
+            "type": "message",
+            "ts": "1700000600.000100",
+            "channel": "C08R8LE6DDG",
+            "user": "U_REV",
+            "thread_ts": "1700000500.000200",
+            "text": "still"
+          }
+        },
+        {
+          "kind": "advance",
+          "ms": 80000
+        },
+        {
+          "kind": "message",
+          "event": {
+            "type": "message",
+            "ts": "1700000600.000100",
+            "channel": "C08R8LE6DDG",
+            "user": "U_REV",
+            "thread_ts": "1700000500.000200",
+            "text": "still"
+          }
+        },
+        {
+          "kind": "advance",
+          "ms": 80000
+        },
+        {
+          "kind": "advance",
+          "ms": 40000
+        }
+      ],
+      "expected": [
+        "{\"calls\":{},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40118\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"pendingReject\\\": {\\n      \\\"statusTs\\\": \\\"1700000500.000200\\\",\\n      \\\"at\\\": \\\"<ISO>\\\"\\n    }\\n  }\\n]\"}",
+        "{\"calls\":{},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40118\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"pendingReject\\\": {\\n      \\\"statusTs\\\": \\\"1700000500.000200\\\",\\n      \\\"at\\\": \\\"<ISO>\\\"\\n    }\\n  }\\n]\"}",
+        "{\"calls\":{},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40118\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"pendingReject\\\": {\\n      \\\"statusTs\\\": \\\"1700000500.000200\\\",\\n      \\\"at\\\": \\\"<ISO>\\\"\\n    }\\n  }\\n]\"}",
+        "{\"calls\":{},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40118\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"pendingReject\\\": {\\n      \\\"statusTs\\\": \\\"1700000500.000200\\\",\\n      \\\"at\\\": \\\"<ISO>\\\"\\n    }\\n  }\\n]\"}",
+        "{\"calls\":{},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40118\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"pendingReject\\\": {\\n      \\\"statusTs\\\": \\\"1700000500.000200\\\",\\n      \\\"at\\\": \\\"<ISO>\\\"\\n    }\\n  }\\n]\"}",
+        "{\"calls\":{},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40118\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"pendingReject\\\": {\\n      \\\"statusTs\\\": \\\"1700000500.000200\\\",\\n      \\\"at\\\": \\\"<ISO>\\\"\\n    }\\n  }\\n]\"}",
+        "{\"calls\":{},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40118\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"pendingReject\\\": {\\n      \\\"statusTs\\\": \\\"1700000500.000200\\\",\\n      \\\"at\\\": \\\"<ISO>\\\"\\n    }\\n  }\\n]\"}",
+        "{\"calls\":{},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40118\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"pendingReject\\\": {\\n      \\\"statusTs\\\": \\\"1700000500.000200\\\",\\n      \\\"at\\\": \\\"<ISO>\\\"\\n    }\\n  }\\n]\"}",
+        "{\"calls\":{},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40118\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"pendingReject\\\": {\\n      \\\"statusTs\\\": \\\"1700000500.000200\\\",\\n      \\\"at\\\": \\\"<ISO>\\\"\\n    }\\n  }\\n]\"}",
+        "{\"calls\":{},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40118\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"pendingReject\\\": {\\n      \\\"statusTs\\\": \\\"1700000500.000200\\\",\\n      \\\"at\\\": \\\"<ISO>\\\"\\n    }\\n  }\\n]\"}",
+        "{\"calls\":{},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40118\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"pendingReject\\\": {\\n      \\\"statusTs\\\": \\\"1700000500.000200\\\",\\n      \\\"at\\\": \\\"<ISO>\\\"\\n    }\\n  }\\n]\"}",
+        "{\"calls\":{},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40118\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"pendingReject\\\": {\\n      \\\"statusTs\\\": \\\"1700000500.000200\\\",\\n      \\\"at\\\": \\\"<ISO>\\\"\\n    }\\n  }\\n]\"}",
+        "{\"calls\":{},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40118\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"pendingReject\\\": {\\n      \\\"statusTs\\\": \\\"1700000500.000200\\\",\\n      \\\"at\\\": \\\"<ISO>\\\"\\n    }\\n  }\\n]\"}",
+        "{\"calls\":{},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40118\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"pendingReject\\\": {\\n      \\\"statusTs\\\": \\\"1700000500.000200\\\",\\n      \\\"at\\\": \\\"<ISO>\\\"\\n    }\\n  }\\n]\"}",
+        "{\"calls\":{\"chat.postMessage\":[{\"channel\":\"U1\",\"text\":\":neocat_sad: Your confession #40118 was denied. Reason (will be blank if none was provided): \\n> still <https://hackclub.enterprise.slack.com/archives/C08R8LE6DDG/p1700000500000200|View the thread>\"}],\"conversations.replies\":[{\"channel\":\"C08R8LE6DDG\",\"ts\":\"1700000500.000200\"}]},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40118\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": true,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"status\\\": \\\"rejected\\\"\\n  }\\n]\"}"
+      ]
+    },
+    {
+      "name": "unrejected cancels a pending rejection",
+      "restrict": true,
+      "verify": false,
+      "userToken": false,
+      "data": "[{\"id\":\"40119\",\"userId\":\"U1\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.606Z\"}]",
+      "replies": {},
+      "steps": [
+        {
+          "kind": "message",
+          "event": {
+            "type": "message",
+            "ts": "1700000500.000200",
+            "channel": "C08R8LE6DDG",
+            "bot_id": "B0C6JPG4W0G",
+            "text": "40119 denied"
+          }
+        },
+        {
+          "kind": "message",
+          "event": {
+            "type": "message",
+            "ts": "1700000500.000200",
+            "channel": "C08R8LE6DDG",
+            "bot_id": "B0C6JPG4W0G",
+            "text": "40119 unrejected"
+          }
+        },
+        {
+          "kind": "advance",
+          "ms": 700000
+        }
+      ],
+      "expected": [
+        "{\"calls\":{},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40119\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"pendingReject\\\": {\\n      \\\"statusTs\\\": \\\"1700000500.000200\\\",\\n      \\\"at\\\": \\\"<ISO>\\\"\\n    }\\n  }\\n]\"}",
+        "{\"calls\":{},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40119\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  }\\n]\"}",
+        "{\"calls\":{},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40119\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  }\\n]\"}"
+      ]
+    },
+    {
+      "name": "a pending rejection is resumed after a restart",
+      "restrict": true,
+      "verify": false,
+      "userToken": false,
+      "data": "[{\"id\":\"40120\",\"userId\":\"U1\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.606Z\",\"pendingReject\":{\"statusTs\":\"1700000500.000200\",\"at\":\"2026-11-22T02:16:43.606Z\"}}]",
+      "replies": {
+        "conversations.replies": [
+          {
+            "ok": true,
+            "messages": [
+              {
+                "text": "40120 denied"
+              },
+              {
+                "text": "later",
+                "user": "U_REV"
+              }
+            ],
+            "response_metadata": {
+              "next_cursor": ""
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "kind": "resume"
+        },
+        {
+          "kind": "advance",
+          "ms": 89999
+        },
+        {
+          "kind": "advance",
+          "ms": 1
+        }
+      ],
+      "expected": [
+        "{\"calls\":{},\"responded\":[],\"data\":\"[{\\\"id\\\":\\\"40120\\\",\\\"userId\\\":\\\"U1\\\",\\\"resolved\\\":false,\\\"date\\\":\\\"<ISO>\\\",\\\"pendingReject\\\":{\\\"statusTs\\\":\\\"1700000500.000200\\\",\\\"at\\\":\\\"<ISO>\\\"}}]\"}",
+        "{\"calls\":{},\"responded\":[],\"data\":\"[{\\\"id\\\":\\\"40120\\\",\\\"userId\\\":\\\"U1\\\",\\\"resolved\\\":false,\\\"date\\\":\\\"<ISO>\\\",\\\"pendingReject\\\":{\\\"statusTs\\\":\\\"1700000500.000200\\\",\\\"at\\\":\\\"<ISO>\\\"}}]\"}",
+        "{\"calls\":{\"chat.postMessage\":[{\"channel\":\"U1\",\"text\":\":neocat_sad: Your confession #40120 was denied. Reason (will be blank if none was provided): \\n> later <https://hackclub.enterprise.slack.com/archives/C08R8LE6DDG/p1700000500000200|View the thread>\"}],\"conversations.replies\":[{\"channel\":\"C08R8LE6DDG\",\"ts\":\"1700000500.000200\"}]},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40120\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": true,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"status\\\": \\\"rejected\\\"\\n  }\\n]\"}"
+      ]
+    },
+    {
+      "name": "a reply from a bot, or the root itself, is not a reviewer reply",
+      "restrict": true,
+      "verify": false,
+      "userToken": false,
+      "data": "[{\"id\":\"40121\",\"userId\":\"U1\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.606Z\"}]",
+      "replies": {
+        "conversations.replies": [
+          {
+            "ok": true,
+            "messages": [
+              {
+                "text": "40121 denied"
+              }
+            ],
+            "response_metadata": {
+              "next_cursor": ""
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "kind": "message",
+          "event": {
+            "type": "message",
+            "ts": "1700000500.000200",
+            "channel": "C08R8LE6DDG",
+            "bot_id": "B0C6JPG4W0G",
+            "text": "40121 denied"
+          }
+        },
+        {
+          "kind": "message",
+          "event": {
+            "type": "message",
+            "ts": "1700000500.000200",
+            "channel": "C08R8LE6DDG",
+            "user": "U_REV",
+            "thread_ts": "1700000500.000200",
+            "text": "hi"
+          }
+        },
+        {
+          "kind": "message",
+          "event": {
+            "type": "message",
+            "ts": "1700000510.000100",
+            "channel": "C08R8LE6DDG",
+            "bot_id": "B_BOT",
+            "thread_ts": "1700000500.000200",
+            "text": "hi"
+          }
+        },
+        {
+          "kind": "advance",
+          "ms": 90000
+        }
+      ],
+      "expected": [
+        "{\"calls\":{},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40121\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"pendingReject\\\": {\\n      \\\"statusTs\\\": \\\"1700000500.000200\\\",\\n      \\\"at\\\": \\\"<ISO>\\\"\\n    }\\n  }\\n]\"}",
+        "{\"calls\":{},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40121\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"pendingReject\\\": {\\n      \\\"statusTs\\\": \\\"1700000500.000200\\\",\\n      \\\"at\\\": \\\"<ISO>\\\"\\n    }\\n  }\\n]\"}",
+        "{\"calls\":{},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40121\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"pendingReject\\\": {\\n      \\\"statusTs\\\": \\\"1700000500.000200\\\",\\n      \\\"at\\\": \\\"<ISO>\\\"\\n    }\\n  }\\n]\"}",
+        "{\"calls\":{\"chat.postMessage\":[{\"channel\":\"U1\",\"text\":\":neocat_sad: Your confession #40121 was denied. Reason (will be blank if none was provided):  <https://hackclub.enterprise.slack.com/archives/C08R8LE6DDG/p1700000500000200|View the thread>\"}],\"conversations.replies\":[{\"channel\":\"C08R8LE6DDG\",\"ts\":\"1700000500.000200\"}]},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40121\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": true,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"status\\\": \\\"rejected\\\"\\n  }\\n]\"}"
+      ]
+    },
+    {
+      "name": "startup looks up every open entry; resolved and pending ones are skipped",
+      "restrict": true,
+      "verify": false,
+      "userToken": false,
+      "data": "[{\"id\":\"40201\",\"userId\":\"U1\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.606Z\"},{\"id\":\"40202\",\"userId\":\"U1\",\"resolved\":true,\"date\":\"2026-11-22T02:16:43.606Z\",\"status\":\"approved\"},{\"id\":\"40203\",\"userId\":\"U1\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.606Z\",\"pendingReject\":{\"statusTs\":\"1700000500.000200\",\"at\":\"2026-11-22T02:16:43.606Z\"}}]",
+      "replies": {
+        "conversations.history": [
+          {
+            "ok": true,
+            "messages": [
+              {
+                "bot_id": "B0C6JPG4W0G",
+                "text": "40201 approved to <#CNMU9L92Q>",
+                "ts": "1700000900.000100"
+              }
+            ],
+            "response_metadata": {
+              "next_cursor": ""
+            }
+          },
+          {
+            "ok": true,
+            "messages": [
+              {
+                "text": "40201: hi",
+                "ts": "1700000000.000300"
+              }
+            ],
+            "response_metadata": {
+              "next_cursor": ""
+            }
+          }
+        ],
+        "conversations.replies": [
+          {
+            "ok": true,
+            "messages": [
+              {
+                "text": "40203 denied"
+              },
+              {
+                "text": "later",
+                "user": "U_REV"
+              }
+            ],
+            "response_metadata": {
+              "next_cursor": ""
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "kind": "startup"
+        },
+        {
+          "kind": "advance",
+          "ms": 90000
+        }
+      ],
+      "expected": [
+        "{\"calls\":{\"chat.postMessage\":[{\"channel\":\"U1\",\"text\":\":yay: Your confession #40201 got approved for <#CNMU9L92Q>! <https://hackclub.enterprise.slack.com/archives/CNMU9L92Q/p1700000000000300|View it here>\"}],\"conversations.history\":[{\"channel\":\"C08R8LE6DDG\",\"limit\":200},{\"channel\":\"CNMU9L92Q\",\"limit\":200}]},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40201\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": true,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"postTs\\\": \\\"1700000000.000300\\\",\\n    \\\"status\\\": \\\"approved\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40202\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": true,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"status\\\": \\\"approved\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40203\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"pendingReject\\\": {\\n      \\\"statusTs\\\": \\\"1700000500.000200\\\",\\n      \\\"at\\\": \\\"<ISO>\\\"\\n    }\\n  }\\n]\"}",
+        "{\"calls\":{\"chat.postMessage\":[{\"channel\":\"U1\",\"text\":\":neocat_sad: Your confession #40203 was denied. Reason (will be blank if none was provided): \\n> later <https://hackclub.enterprise.slack.com/archives/C08R8LE6DDG/p1700000500000200|View the thread>\"}],\"conversations.replies\":[{\"channel\":\"C08R8LE6DDG\",\"ts\":\"1700000500.000200\"}]},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40201\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": true,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"postTs\\\": \\\"1700000000.000300\\\",\\n    \\\"status\\\": \\\"approved\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40202\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": true,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"status\\\": \\\"approved\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"40203\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": true,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"status\\\": \\\"rejected\\\"\\n  }\\n]\"}"
+      ]
+    },
+    {
+      "name": "an approval that lands first stops the timer from sending a denial",
+      "restrict": true,
+      "verify": false,
+      "userToken": false,
+      "data": "[{\"id\":\"40122\",\"userId\":\"U1\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.606Z\"}]",
+      "replies": {},
+      "steps": [
+        {
+          "kind": "message",
+          "event": {
+            "type": "message",
+            "ts": "1700000500.000200",
+            "channel": "C08R8LE6DDG",
+            "bot_id": "B0C6JPG4W0G",
+            "text": "40122 denied"
+          }
+        },
+        {
+          "kind": "message",
+          "event": {
+            "type": "message",
+            "ts": "1700000500.000200",
+            "channel": "C08R8LE6DDG",
+            "bot_id": "B0C6JPG4W0G",
+            "text": "40122 approved to <#CNMU9L92Q>"
+          }
+        },
+        {
+          "kind": "advance",
+          "ms": 90000
+        }
+      ],
+      "expected": [
+        "{\"calls\":{},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40122\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"pendingReject\\\": {\\n      \\\"statusTs\\\": \\\"1700000500.000200\\\",\\n      \\\"at\\\": \\\"<ISO>\\\"\\n    }\\n  }\\n]\"}",
+        "{\"calls\":{\"chat.postMessage\":[{\"channel\":\"U1\",\"text\":\":yay: Your confession #40122 got approved for <#CNMU9L92Q>!\"}],\"conversations.history\":[{\"channel\":\"CNMU9L92Q\",\"limit\":200},{\"channel\":\"C0188CY57PZ\",\"limit\":200}]},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40122\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": true,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"pendingReject\\\": {\\n      \\\"statusTs\\\": \\\"1700000500.000200\\\",\\n      \\\"at\\\": \\\"<ISO>\\\"\\n    },\\n    \\\"status\\\": \\\"approved\\\"\\n  }\\n]\"}",
+        "{\"calls\":{},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40122\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": true,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"pendingReject\\\": {\\n      \\\"statusTs\\\": \\\"1700000500.000200\\\",\\n      \\\"at\\\": \\\"<ISO>\\\"\\n    },\\n    \\\"status\\\": \\\"approved\\\"\\n  }\\n]\"}"
+      ]
+    },
+    {
+      "name": "a failed rejection DM still resolves the entry",
+      "restrict": true,
+      "verify": false,
+      "userToken": false,
+      "data": "[{\"id\":\"40123\",\"userId\":\"U1\",\"resolved\":false,\"date\":\"2026-11-22T02:16:43.606Z\"}]",
+      "replies": {
+        "chat.postMessage": [
+          {
+            "__error": "user_not_found"
+          }
+        ]
+      },
+      "steps": [
+        {
+          "kind": "message",
+          "event": {
+            "type": "message",
+            "ts": "1700000500.000200",
+            "channel": "C08R8LE6DDG",
+            "bot_id": "B0C6JPG4W0G",
+            "text": "40123 denied"
+          }
+        },
+        {
+          "kind": "advance",
+          "ms": 90000
+        }
+      ],
+      "expected": [
+        "{\"calls\":{},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40123\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"pendingReject\\\": {\\n      \\\"statusTs\\\": \\\"1700000500.000200\\\",\\n      \\\"at\\\": \\\"<ISO>\\\"\\n    }\\n  }\\n]\"}",
+        "{\"calls\":{\"chat.postMessage\":[{\"channel\":\"U1\",\"text\":\":neocat_sad: Your confession #40123 was denied. Reason (will be blank if none was provided):  <https://hackclub.enterprise.slack.com/archives/C08R8LE6DDG/p1700000500000200|View the thread>\"}],\"conversations.replies\":[{\"channel\":\"C08R8LE6DDG\",\"ts\":\"1700000500.000200\"}]},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40123\\\",\\n    \\\"userId\\\": \\\"U1\\\",\\n    \\\"resolved\\\": true,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"status\\\": \\\"rejected\\\"\\n  }\\n]\"}"
+      ]
+    },
+    {
+      "name": "track looks back and applies a status posted before tracking (history)",
+      "restrict": true,
+      "verify": false,
+      "userToken": false,
+      "data": "[]",
+      "replies": {
+        "conversations.history": [
+          {
+            "ok": true,
+            "messages": [
+              {
+                "bot_id": "B0C6JPG4W0G",
+                "text": "40124 approved to <#CNMU9L92Q>",
+                "ts": "1700000900.000100"
+              }
+            ],
+            "response_metadata": {
+              "next_cursor": ""
+            }
+          },
+          {
+            "ok": true,
+            "messages": [
+              {
+                "text": "40124: hi",
+                "ts": "1700000000.000300"
+              }
+            ],
+            "response_metadata": {
+              "next_cursor": ""
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "kind": "command",
+          "payload": {
+            "command": "/mrox",
+            "text": "40124",
+            "user_id": "U00000TEST",
+            "response_url": "https://hooks.example/resp"
+          }
+        }
+      ],
+      "expected": [
+        "{\"calls\":{\"chat.postMessage\":[{\"channel\":\"U00000TEST\",\"text\":\":yay: Your confession #40124 got approved for <#CNMU9L92Q>! <https://hackclub.enterprise.slack.com/archives/CNMU9L92Q/p1700000000000300|View it here>\"}],\"conversations.history\":[{\"channel\":\"C08R8LE6DDG\",\"limit\":200},{\"channel\":\"CNMU9L92Q\",\"limit\":200}]},\"responded\":[[\"https://hooks.example/resp\",{\"text\":\"Now tracking confession #40124. I'll DM you when its status changes. :neocat:\"}]],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40124\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": true,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"postTs\\\": \\\"1700000000.000300\\\",\\n    \\\"status\\\": \\\"approved\\\"\\n  }\\n]\"}"
+      ]
+    },
+    {
+      "name": "track looks back and finds a denial; the reason comes later (history)",
+      "restrict": true,
+      "verify": false,
+      "userToken": false,
+      "data": "[]",
+      "replies": {
+        "conversations.history": [
+          {
+            "ok": true,
+            "messages": [
+              {
+                "bot_id": "B0C6JPG4W0G",
+                "text": "40125 denied",
+                "ts": "1700000700.000100"
+              }
+            ],
+            "response_metadata": {
+              "next_cursor": ""
+            }
+          }
+        ],
+        "conversations.replies": [
+          {
+            "ok": true,
+            "messages": [
+              {
+                "text": "40125 denied"
+              },
+              {
+                "text": "nope",
+                "user": "U_REV"
+              }
+            ],
+            "response_metadata": {
+              "next_cursor": ""
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "kind": "command",
+          "payload": {
+            "command": "/mrox",
+            "text": "40125",
+            "user_id": "U00000TEST",
+            "response_url": "https://hooks.example/resp"
+          }
+        },
+        {
+          "kind": "advance",
+          "ms": 90000
+        }
+      ],
+      "expected": [
+        "{\"calls\":{\"conversations.history\":[{\"channel\":\"C08R8LE6DDG\",\"limit\":200}]},\"responded\":[[\"https://hooks.example/resp\",{\"text\":\"Now tracking confession #40125. I'll DM you when its status changes. :neocat:\"}]],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40125\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"pendingReject\\\": {\\n      \\\"statusTs\\\": \\\"1700000700.000100\\\",\\n      \\\"at\\\": \\\"<ISO>\\\"\\n    }\\n  }\\n]\"}",
+        "{\"calls\":{\"chat.postMessage\":[{\"channel\":\"U00000TEST\",\"text\":\":neocat_sad: Your confession #40125 was denied. Reason (will be blank if none was provided): \\n> nope <https://hackclub.enterprise.slack.com/archives/C08R8LE6DDG/p1700000700000100|View the thread>\"}],\"conversations.replies\":[{\"channel\":\"C08R8LE6DDG\",\"ts\":\"1700000700.000100\"}]},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40125\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": true,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"status\\\": \\\"rejected\\\"\\n  }\\n]\"}"
+      ]
+    },
+    {
+      "name": "search.messages finds the status first, so the history is not read",
+      "restrict": true,
+      "verify": false,
+      "userToken": true,
+      "data": "[]",
+      "replies": {
+        "search.messages": [
+          {
+            "ok": true,
+            "messages": {
+              "matches": [
+                {
+                  "channel": {
+                    "id": "C08R8LE6DDG"
+                  },
+                  "bot_id": "B0C6JPG4W0G",
+                  "text": "40126 approved to <#CNMU9L92Q>",
+                  "ts": "1700000900.000100"
+                }
+              ]
+            }
+          }
+        ],
+        "conversations.history": [
+          {
+            "ok": true,
+            "messages": [
+              {
+                "text": "40126: hi",
+                "ts": "1700000000.000300"
+              }
+            ],
+            "response_metadata": {
+              "next_cursor": ""
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "kind": "command",
+          "payload": {
+            "command": "/mrox",
+            "text": "40126",
+            "user_id": "U00000TEST",
+            "response_url": "https://hooks.example/resp"
+          }
+        }
+      ],
+      "expected": [
+        "{\"calls\":{\"chat.postMessage\":[{\"channel\":\"U00000TEST\",\"text\":\":yay: Your confession #40126 got approved for <#CNMU9L92Q>! <https://hackclub.enterprise.slack.com/archives/CNMU9L92Q/p1700000000000300|View it here>\"}],\"conversations.history\":[{\"channel\":\"CNMU9L92Q\",\"limit\":200}],\"search.messages\":[{\"query\":\"\\\"#40126\\\" in:#confessions-log\",\"sort\":\"timestamp\",\"sort_dir\":\"desc\",\"count\":20}]},\"responded\":[[\"https://hooks.example/resp\",{\"text\":\"Now tracking confession #40126. I'll DM you when its status changes. :neocat:\"}]],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40126\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": true,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"postTs\\\": \\\"1700000000.000300\\\",\\n    \\\"status\\\": \\\"approved\\\"\\n  }\\n]\"}"
+      ]
+    },
+    {
+      "name": "search.messages with no hit falls back to the history scan",
+      "restrict": true,
+      "verify": false,
+      "userToken": true,
+      "data": "[]",
+      "replies": {
+        "search.messages": [
+          {
+            "ok": true,
+            "messages": {
+              "matches": []
+            }
+          }
+        ],
+        "conversations.history": [
+          {
+            "ok": true,
+            "messages": [
+              {
+                "bot_id": "B0C6JPG4W0G",
+                "text": "40127 denied",
+                "ts": "1700000700.000100"
+              }
+            ],
+            "response_metadata": {
+              "next_cursor": ""
+            }
+          }
+        ],
+        "conversations.replies": [
+          {
+            "ok": true,
+            "messages": [
+              {
+                "text": "40127 denied"
+              },
+              {
+                "text": "why",
+                "user": "U_REV"
+              }
+            ],
+            "response_metadata": {
+              "next_cursor": ""
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "kind": "command",
+          "payload": {
+            "command": "/mrox",
+            "text": "40127",
+            "user_id": "U00000TEST",
+            "response_url": "https://hooks.example/resp"
+          }
+        },
+        {
+          "kind": "advance",
+          "ms": 90000
+        }
+      ],
+      "expected": [
+        "{\"calls\":{\"conversations.history\":[{\"channel\":\"C08R8LE6DDG\",\"limit\":200}],\"search.messages\":[{\"query\":\"\\\"#40127\\\" in:#confessions-log\",\"sort\":\"timestamp\",\"sort_dir\":\"desc\",\"count\":20}]},\"responded\":[[\"https://hooks.example/resp\",{\"text\":\"Now tracking confession #40127. I'll DM you when its status changes. :neocat:\"}]],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40127\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"pendingReject\\\": {\\n      \\\"statusTs\\\": \\\"1700000700.000100\\\",\\n      \\\"at\\\": \\\"<ISO>\\\"\\n    }\\n  }\\n]\"}",
+        "{\"calls\":{\"chat.postMessage\":[{\"channel\":\"U00000TEST\",\"text\":\":neocat_sad: Your confession #40127 was denied. Reason (will be blank if none was provided): \\n> why <https://hackclub.enterprise.slack.com/archives/C08R8LE6DDG/p1700000700000100|View the thread>\"}],\"conversations.replies\":[{\"channel\":\"C08R8LE6DDG\",\"ts\":\"1700000700.000100\"}]},\"responded\":[],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40127\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": true,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"status\\\": \\\"rejected\\\"\\n  }\\n]\"}"
+      ]
+    },
+    {
+      "name": "a failing search falls back to the history scan",
+      "restrict": true,
+      "verify": false,
+      "userToken": true,
+      "data": "[]",
+      "replies": {
+        "search.messages": [
+          {
+            "__error": "ratelimited"
+          }
+        ],
+        "conversations.history": [
+          {
+            "ok": true,
+            "messages": [
+              {
+                "bot_id": "B0C6JPG4W0G",
+                "text": "40128 unapproved",
+                "ts": "1700000800.000100"
+              }
+            ],
+            "response_metadata": {
+              "next_cursor": ""
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "kind": "command",
+          "payload": {
+            "command": "/mrox",
+            "text": "40128",
+            "user_id": "U00000TEST",
+            "response_url": "https://hooks.example/resp"
+          }
+        }
+      ],
+      "expected": [
+        "{\"calls\":{\"chat.postMessage\":[{\"channel\":\"U00000TEST\",\"text\":\":uuh: Your confession #40128 was unapproved and the thread has been nuked.\"}],\"conversations.history\":[{\"channel\":\"C08R8LE6DDG\",\"limit\":200}],\"search.messages\":[{\"query\":\"\\\"#40128\\\" in:#confessions-log\",\"sort\":\"timestamp\",\"sort_dir\":\"desc\",\"count\":20}]},\"responded\":[[\"https://hooks.example/resp\",{\"text\":\"Now tracking confession #40128. I'll DM you when its status changes. :neocat:\"}]],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40128\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": true,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"status\\\": \\\"unapproved\\\"\\n  }\\n]\"}"
+      ]
+    },
+    {
+      "name": "without a user token there is no search at all",
+      "restrict": true,
+      "verify": false,
+      "userToken": false,
+      "data": "[]",
+      "replies": {
+        "conversations.history": [
+          {
+            "ok": true,
+            "messages": [
+              {
+                "bot_id": "B0C6JPG4W0G",
+                "text": "40129 unapproved",
+                "ts": "1700000800.000100"
+              }
+            ],
+            "response_metadata": {
+              "next_cursor": ""
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "kind": "command",
+          "payload": {
+            "command": "/mrox",
+            "text": "40129",
+            "user_id": "U00000TEST",
+            "response_url": "https://hooks.example/resp"
+          }
+        }
+      ],
+      "expected": [
+        "{\"calls\":{\"chat.postMessage\":[{\"channel\":\"U00000TEST\",\"text\":\":uuh: Your confession #40129 was unapproved and the thread has been nuked.\"}],\"conversations.history\":[{\"channel\":\"C08R8LE6DDG\",\"limit\":200}]},\"responded\":[[\"https://hooks.example/resp\",{\"text\":\"Now tracking confession #40129. I'll DM you when its status changes. :neocat:\"}]],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40129\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": true,\\n    \\\"date\\\": \\\"<ISO>\\\",\\n    \\\"status\\\": \\\"unapproved\\\"\\n  }\\n]\"}"
+      ]
+    },
+    {
+      "name": "search hits from other users or channels are ignored",
+      "restrict": true,
+      "verify": false,
+      "userToken": true,
+      "data": "[]",
+      "replies": {
+        "search.messages": [
+          {
+            "ok": true,
+            "messages": {
+              "matches": [
+                {
+                  "channel": {
+                    "id": "C_OTHER"
+                  },
+                  "bot_id": "B0C6JPG4W0G",
+                  "text": "40130 approved to <#CNMU9L92Q>",
+                  "ts": "1.1"
+                },
+                {
+                  "channel": {
+                    "id": "C08R8LE6DDG"
+                  },
+                  "user": "U_HUMAN",
+                  "text": "40130 approved to <#CNMU9L92Q>",
+                  "ts": "1.2"
+                }
+              ]
+            }
+          }
+        ],
+        "conversations.history": [
+          {
+            "ok": true,
+            "messages": [],
+            "response_metadata": {
+              "next_cursor": ""
+            }
+          }
+        ]
+      },
+      "steps": [
+        {
+          "kind": "command",
+          "payload": {
+            "command": "/mrox",
+            "text": "40130",
+            "user_id": "U00000TEST",
+            "response_url": "https://hooks.example/resp"
+          }
+        }
+      ],
+      "expected": [
+        "{\"calls\":{\"conversations.history\":[{\"channel\":\"C08R8LE6DDG\",\"limit\":200}],\"search.messages\":[{\"query\":\"\\\"#40130\\\" in:#confessions-log\",\"sort\":\"timestamp\",\"sort_dir\":\"desc\",\"count\":20}]},\"responded\":[[\"https://hooks.example/resp\",{\"text\":\"Now tracking confession #40130. I'll DM you when its status changes. :neocat:\"}]],\"data\":\"[\\n  {\\n    \\\"id\\\": \\\"40130\\\",\\n    \\\"userId\\\": \\\"U00000TEST\\\",\\n    \\\"resolved\\\": false,\\n    \\\"date\\\": \\\"<ISO>\\\"\\n  }\\n]\"}"
+      ]
+    }
+  ]
+}

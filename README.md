@@ -70,3 +70,47 @@ point at throwaway channels.
 - The bot only acts on status messages from the Owl bot (`OWL_BOT_ID`) in the
   logs channel.
 - The bot needs `channels:history` and to be a member of the channels it scans.
+
+## Switching to Rust
+
+`rust/` is a port of `test.ts` (behaviour and file formats are listed in `rust/PARITY.md`). It reads and writes the
+same `confessions.json`, `config.yaml` and `.env`, so either bot can take over from the other.
+
+Run one bot at a time. Two Socket Mode connections split the events between them, so one bot would miss half of
+them. The Rust unit is `deploy/mrox-rust.service`; it runs `rust/target/release/mrox` with the same user, working
+directory and env file as `mrox.service`.
+
+1. Build on the server (as `gaypeople`; `cargo` must be on the PATH, or in `~/.cargo/bin`):
+
+   ```sh
+   cd ~/code/mrox/rust && cargo build --release
+   ```
+
+   `deploy/update.sh` does this itself whenever `rust/` changes in a pull.
+2. Set `ALLOWED_USER_ID` in `.env`. The Rust port has no built-in default: unset, `/mrox` refuses everyone (the
+   TypeScript default is not copied into the code). `RESTRICT_TO_USER=false` opens it to everyone, as before.
+3. Install the unit and allow the update script to restart it:
+
+   ```sh
+   sudo cp deploy/mrox-rust.service /etc/systemd/system/ && sudo systemctl daemon-reload
+   echo 'gaypeople ALL=(root) NOPASSWD: /usr/bin/systemctl restart mrox-rust' | sudo tee -a /etc/sudoers.d/mrox
+   ```
+
+4. Switch over (stop the TypeScript bot first, then start the Rust one):
+
+   ```sh
+   sudo systemctl stop mrox && sudo systemctl disable mrox
+   sudo systemctl enable --now mrox-rust
+   journalctl -u mrox-rust -f   # expect "(test.ts) Bot is running..."
+   ```
+
+`deploy/update.sh` restarts `mrox-rust` while it is active, and `mrox` otherwise, so the daily update keeps working
+on either side of the switch.
+
+**Rollback** (state is in the shared files, so nothing is lost; pending rejections are stored in
+`confessions.json` and resume on start):
+
+```sh
+sudo systemctl stop mrox-rust
+sudo systemctl enable --now mrox
+```
