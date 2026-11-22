@@ -3,8 +3,8 @@
 # Placeholders (case-sensitive):
 #   {confessionID} - the confession number, e.g. 40289
 #   {status}       - "still being tracked" or "resolved (...)"
-#   {link}         - "" or " <url|View it here>"
-#   {reason}       - "" or "\n> Reason: ..."
+#   {link}         - "" or " <url|View it here>" (rejected: " <url|View the thread>" to the denial thread)
+#   {reason}       - "" or "\n> ..." (the reviewer's replies, quoted)
 #   {count}        - number of confessions affected (untrack below)
 #   {threshold}    - the cutoff number (untrack below)
 # Channel mentions use the <#C...> syntax Slack renders as a link.
@@ -26,7 +26,7 @@ messages:
   approved: ":yay: Your confession #{confessionID} got approved for <#{channel}>!{link}"
   meta_approved: ":meta: Your confession #{confessionID} got approved for <#{channel}>!{link}"
   unapproved: ":uuh: Your confession #{confessionID} was unapproved and the thread has been nuked."
-  rejected: ":neocat_sad: Your confession #{confessionID} was denied. Reason (will be blank if none was provided): {reason}"
+  rejected: ":neocat_sad: Your confession #{confessionID} was denied. Reason (will be blank if none was provided): {reason}{link}"
 
   # Posted in #confession-logs when a status arrives for an already-resolved
   # confession (something that "shouldn't be possible"). One picked at random.
