@@ -6,6 +6,8 @@ import path from 'path';
 import yaml from 'js-yaml';
 
 const web = new WebClient(process.env.SLACK_BOT_TOKEN);
+// Optional user token with search:read (bot tokens can't search); used to look up old statuses
+const userWeb = process.env.SLACK_USER_TOKEN ? new WebClient(process.env.SLACK_USER_TOKEN) : undefined;
 
 // ---------------------------------------------------------------------------
 // Configuration (env overrides take priority, then these defaults)
@@ -20,6 +22,8 @@ const Channel_Meta = process.env.CHANNEL_META ?? "C0188CY57PZ";
 
 // Prox2 is now "Owl" (app_id A0C5L27PB9P, user_id U0C5Q89C2P4)
 const OWL_BOT_ID = process.env.OWL_BOT_ID ?? "B0C6JPG4W0G";
+const OWL_USER_ID = process.env.OWL_USER_ID ?? "U0C5Q89C2P4";
+const LOGS_CHANNEL_NAME = process.env.LOGS_CHANNEL_NAME ?? "confessions-log";
 
 const WORKSPACE_DOMAIN =
   process.env.WORKSPACE_DOMAIN ?? "hackclub.enterprise.slack.com";
@@ -31,6 +35,11 @@ const DATA_FILE = process.env.DATA_FILE ?? path.join(process.cwd(), "confessions
 const CONFIG_FILE = process.env.CONFIG_FILE ?? path.join(process.cwd(), "config.yaml");
 
 const RETENTION_MS = 2 * 24 * 60 * 60 * 1000; // keep resolved confessions 2 days
+// Reviewers post the denial reason as a thread reply a few seconds to minutes after Owl's
+// "was rejected" log, so hold the DM: send it REASON_QUIET_MS after the reviewer's last reply,
+// or at REASON_MAX_WAIT_MS after the rejection if nobody replies.
+const REASON_MAX_WAIT_MS = Number(process.env.REASON_MAX_WAIT_MS ?? 10 * 60 * 1000);
+const REASON_QUIET_MS = Number(process.env.REASON_QUIET_MS ?? 90 * 1000);
 const HISTORY_SCAN_LIMIT = 5; // pages of 200 when searching for a confession post
 const DEBUG = process.env.DEBUG === "true";
 
@@ -90,6 +99,7 @@ interface Confession {
   date: string;
   postTs?: string; // ts of the confession message (for links / thread ops)
   status?: string; // last known status keyword
+  pendingReject?: { statusTs: string; at: string }; // rejection waiting for its reason
 }
 
 function readConfessions(): Confession[] {
@@ -132,6 +142,7 @@ function trackConfession(id: string, userId: string): string {
   const data = readConfessions();
   data.push({ id, userId, resolved: false, date: new Date().toISOString() });
   writeConfessions(data);
+  void lookbackStatus(id);
   return t("now_tracking", { confessionID: id });
 }
 
@@ -235,7 +246,7 @@ const FALLBACK_MESSAGES: Record<string, string | string[]> = {
   approved: ":yay: Your confession #{confessionID} got approved for <#{channel}>!{link}",
   meta_approved: ":meta: Your confession #{confessionID} got approved for <#{channel}>!{link}",
   unapproved: ":uuh: Your confession #{confessionID} was unapproved and the thread has been nuked.",
-  rejected: ":neocat_sad: Your confession #{confessionID} was denied.{reason}",
+  rejected: ":neocat_sad: Your confession #{confessionID} was denied.{reason}{link}",
   stupid_lines: [...STUPID_FALLBACK],
 };
 
@@ -331,17 +342,21 @@ async function resolvePostTs(post: Confession): Promise<string | undefined> {
   return ts;
 }
 
-// Pull the denial reason: the first non-bot reply in the status message's thread
+// Pull the denial reason: every reply in the status message's thread from the first human
+// who replied (the reviewer), so other people chatting in the thread aren't quoted.
 async function getDenialReason(statusTs: string): Promise<string | undefined> {
   try {
     const res = await web.conversations.replies({
       channel: Channel_Confession_Logs,
       ts: statusTs,
     });
-    const reply = (res.messages ?? [])
+    const human = (res.messages ?? [])
       .slice(1) // skip the root status message
-      .find((m) => !m.bot_id && typeof m.text === "string" && m.text.trim());
-    return reply?.text?.trim();
+      .filter((m) => !m.bot_id && m.user && typeof m.text === "string" && m.text.trim());
+    if (human.length === 0) return undefined;
+    const reviewer = human[0].user;
+    const lines = human.filter((m) => m.user === reviewer).map((m) => m.text!.trim());
+    return lines.join("\n> ");
   } catch (error) {
     warn(`Could not fetch denial reason:`, error);
     return undefined;
@@ -369,7 +384,7 @@ async function stupidThing(channel: string, threadTs?: string) {
 // Status handling
 // ---------------------------------------------------------------------------
 interface StatusResult {
-  kind: "meta" | "approved" | "rejected" | "unapproved" | "none";
+  kind: "meta" | "approved" | "rejected" | "unapproved" | "unrejected" | "none";
 }
 
 function classify(information: string): StatusResult {
@@ -378,6 +393,7 @@ function classify(information: string): StatusResult {
   if (lower.includes("approved") && information.includes(`<#${Channel_Meta}`))
     return { kind: "meta" };
   if (lower.includes("unapproved")) return { kind: "unapproved" };
+  if (lower.includes("unrejected")) return { kind: "unrejected" };
   if (lower.includes("approved")) return { kind: "approved" };
   if (lower.includes("rejected") || lower.includes("denied"))
     return { kind: "rejected" };
@@ -422,15 +438,122 @@ async function checkStatus(information: string, post: Confession, statusTs: stri
       t("approved", { confessionID: post.id, channel: Channel_Confessions, link })
     );
   } else if (kind === "rejected") {
-    const reason = await getDenialReason(statusTs);
-    setResolved(post.id, "rejected");
-    await dm(
-      post.userId,
-      t("rejected", {
-        confessionID: post.id,
-        reason: reason ? `\n> Reason: ${reason}` : "",
-      })
+    // Wait for the reviewer's reason; sendRejection fires from a timer
+    updateConfession(post.id, { pendingReject: { statusTs, at: new Date().toISOString() } });
+    scheduleRejection(post.id, Date.now() + REASON_QUIET_MS);
+  } else if (kind === "unrejected") {
+    // A rejection was undone before we told anyone: drop it and keep tracking
+    if (post.pendingReject) {
+      cancelRejection(post.id);
+      updateConfession(post.id, { pendingReject: undefined });
+    }
+  }
+}
+
+// Pending rejection DMs, keyed by confession id
+const rejectionTimers = new Map<string, NodeJS.Timeout>();
+
+function cancelRejection(id: string) {
+  const timer = rejectionTimers.get(id);
+  if (timer) clearTimeout(timer);
+  rejectionTimers.delete(id);
+}
+
+// (Re)schedule a pending rejection DM for `when`, never later than the max wait
+function scheduleRejection(id: string, when: number) {
+  const post = findConfession(id);
+  if (!post?.pendingReject) return;
+  const deadline = new Date(post.pendingReject.at).getTime() + REASON_MAX_WAIT_MS;
+  cancelRejection(id);
+  const delay = Math.max(0, Math.min(when, deadline) - Date.now());
+  rejectionTimers.set(id, setTimeout(() => void sendRejection(id), delay));
+}
+
+async function sendRejection(id: string) {
+  rejectionTimers.delete(id);
+  const post = findConfession(id);
+  if (!post?.pendingReject || post.resolved) return;
+  const reason = await getDenialReason(post.pendingReject.statusTs);
+  updateConfession(id, { resolved: true, status: "rejected", pendingReject: undefined });
+  await dm(
+    post.userId,
+    t("rejected", {
+      confessionID: post.id,
+      reason: reason ? `\n> ${reason}` : "",
+      // the rejection thread in #confessions-log, where the reviewer's reason lives
+      link: ` <${messageLink(Channel_Confession_Logs, post.pendingReject.statusTs)}|View the thread>`,
+    })
+  );
+}
+
+// A human reply in a pending rejection's thread pushes the DM back by the quiet period
+function onLogsThreadReply(threadTs: string) {
+  const post = readConfessions().find((c) => c.pendingReject?.statusTs === threadTs);
+  if (post) scheduleRejection(post.id, Date.now() + REASON_QUIET_MS);
+}
+
+// After a restart, pick the pending rejections back up
+function resumePendingRejections() {
+  for (const c of readConfessions()) {
+    if (c.pendingReject && !c.resolved) scheduleRejection(c.id, Date.now() + REASON_QUIET_MS);
+  }
+}
+
+// Search #confessions-log for Owl's newest status on `id`. Returns true if search answered
+// (found a status or definitely none); false means fall back to the history scan.
+async function searchStatus(id: string): Promise<boolean> {
+  if (!userWeb) return false;
+  try {
+    const res: any = await userWeb.search.messages({
+      query: `"#${id}" in:#${LOGS_CHANNEL_NAME}`,
+      sort: "timestamp",
+      sort_dir: "desc",
+      count: 20,
+    });
+    const match = (res.messages?.matches ?? []).find(
+      (m: any) =>
+        m.channel?.id === Channel_Confession_Logs &&
+        (m.bot_id === OWL_BOT_ID || m.user === OWL_USER_ID) &&
+        typeof m.text === "string" &&
+        extractId(m.text) === id &&
+        classify(m.text).kind !== "none"
     );
+    // No hit may just be search lag, so only trust a positive result
+    if (!match) return false;
+    const post = findConfession(id);
+    if (post && !post.resolved && !post.pendingReject) await checkStatus(match.text, post, match.ts);
+    return true;
+  } catch (error) {
+    warn(`Status search failed for ${id}, scanning history instead:`, error);
+    return false;
+  }
+}
+
+// When tracking starts, Owl may already have posted the status (a confession can be approved
+// before anyone tracks it). Look back through the logs for the newest status and apply it.
+async function lookbackStatus(id: string) {
+  if (await searchStatus(id)) return;
+  try {
+    let cursor: string | undefined;
+    for (let page = 0; page < HISTORY_SCAN_LIMIT; page++) {
+      const res = await web.conversations.history({
+        channel: Channel_Confession_Logs,
+        limit: 200,
+        cursor,
+      });
+      for (const m of res.messages ?? []) {
+        // history is newest first, so the first match is the current status
+        if (m.bot_id !== OWL_BOT_ID || typeof m.text !== "string" || !m.ts) continue;
+        if (extractId(m.text) !== id || classify(m.text).kind === "none") continue;
+        const post = findConfession(id);
+        if (post && !post.resolved && !post.pendingReject) await checkStatus(m.text, post, m.ts);
+        return;
+      }
+      cursor = res.response_metadata?.next_cursor;
+      if (!cursor) break;
+    }
+  } catch (error) {
+    warn(`Status lookback failed for ${id}:`, error);
   }
 }
 
@@ -482,6 +605,11 @@ app.event("message", async ({ event, logger }) => {
     }
 
     if (!channel || channel !== Channel_Confession_Logs) return;
+    // Reviewer replies under a rejection carry the reason
+    if (raw.thread_ts && raw.thread_ts !== raw.ts && !botId) {
+      onLogsThreadReply(raw.thread_ts);
+      return;
+    }
     if (!text) return;
     // Only trust status messages from Owl, not anyone who can type in the channel
     if (botId !== OWL_BOT_ID) {
@@ -606,6 +734,11 @@ process.on("uncaughtException", (error) => err("Uncaught exception:", error));
 async function main() {
   ensureFiles();
   cleanup();
+  resumePendingRejections();
+  // Catch statuses posted while the bot was down (or before tracking started)
+  for (const c of readConfessions()) {
+    if (!c.resolved && !c.pendingReject) void lookbackStatus(c.id);
+  }
   setInterval(() => cleanup(), 60 * 60 * 1000); // hourly cleanup
   await app.start();
   console.log("(test.ts) Bot is running...");

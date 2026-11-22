@@ -23,6 +23,8 @@ oauth_config:
       - chat:write.public
       - im:write
       - im:history
+      - mpim:history
+      - mpim:read
       - commands
       - channels:history
       - channels:read
@@ -30,6 +32,8 @@ oauth_config:
       - groups:history
       - groups:read
       - users:read
+    user:
+      - search:read
   pkce_enabled: false
 
 settings:
